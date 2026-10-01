@@ -43,3 +43,24 @@ export function finInfo(v, r) {
   if (!v.fin || !(d.fin.rata > 0)) return '';
   return `Rata mensile: ${euro(d.fin.rata, 2)} · interessi totali: ${euro(d.fin.interessiTotali)} (${euro(d.quotaInteressiAnnua)}/anno per ${anniLabel(Math.round(d.fin.anni * 10) / 10)}). La quota capitale non è un costo aggiuntivo: è già compresa nel prezzo d’acquisto.`;
 }
+
+/** Testi del calcolatore di rimborso chilometrico (r = rimborsoChilometrico(t)). */
+export function testiRimborso(r, t) {
+  const haTariffa = Number(t.tariffa) > 0;
+  const avvisi = haTariffa ? [] : ['Inserisci il rimborso per km: lo trovi nelle tabelle ACI per il tuo modello di auto oppure nell’accordo con la tua azienda.'];
+  let copertura;
+  if (!haTariffa) copertura = 'Il risultato apparirà quando inserisci il rimborso per km.';
+  else if (r.copertura === null) copertura = 'Vuoi sapere se il rimborso copre davvero quanto ti costa l’auto? <a href="/">Calcola il tuo costo reale al km</a> e inseriscilo qui.';
+  else {
+    const d = r.differenza;
+    copertura = `Il rimborso copre il <strong>${pct(r.copertura)}</strong> del costo reale della tua auto per questi km (${euro(r.chilometrico, 2)} su ${euro(r.costoReale, 2)}): ${d >= 0 ? `ti avanzano circa <strong>${euro(d, 2)}</strong>` : `ci rimetti circa <strong>${euro(-d, 2)}</strong>`}.`;
+  }
+  return {
+    avvisi,
+    copertura,
+    totale: haTariffa ? euro(r.totale, 2) : '–',
+    chilometrico: haTariffa ? euro(r.chilometrico, 2) : '–',
+    extra: euro(r.extra, 2),
+    km: `${num(r.km)} km`,
+  };
+}

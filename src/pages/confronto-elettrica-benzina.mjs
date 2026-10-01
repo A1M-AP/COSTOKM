@@ -1,7 +1,5 @@
 import { correlati } from '../correlati.mjs';
-import { CONFRONTO_DEFAULT } from '../../public/assets/js/defaults.js';
-import { calcolaConfronto, testoPareggio, testoDifferenza, tabellaConfronto } from '../../public/assets/js/confronto-core.js';
-import { euro } from '../../public/assets/js/ui.js';
+import { confrontoTool } from '../confronto-tool.mjs';
 
 const faq = [
   {
@@ -37,95 +35,12 @@ export default {
   app: 'Calcolatore di convenienza auto elettrica vs benzina',
   scripts: ['/assets/js/confronto.js'],
   faq,
-  body: (c) => {
-    const pv = (k) => (typeof c.prezzi?.prezzi?.[k]?.valore === 'number' && c.prezzi.prezzi[k].valore > 0 ? c.prezzi.prezzi[k].valore : null);
-    const D = CONFRONTO_DEFAULT;
-    const t = { ...D.termica, prezzoCarb: D.termica.prezzoCarb ?? pv(D.termica.alimentazione) };
-    const e = { ...D.elettrica, prezzoCasa: D.elettrica.prezzoCasa ?? pv('elettricita_casa'), prezzoColonnina: D.elettrica.prezzoColonnina ?? pv('elettricita_colonnina') };
-    const s = { km: D.km, anni: D.anni, termica: t, elettrica: e };
-    const res = calcolaConfronto(s);
-    const tp = testoPareggio(res);
-    const ft = (o) => c.field({ prefix: 't', value: t[o.name.slice(2)], ...o });
-    const fe = (o) => c.field({ prefix: 'e', value: e[o.name.slice(2)], ...o });
-
-    return `<div class="wrap">
+  body: (c) => `<div class="wrap">
 <section class="intro">
   <h1>Auto elettrica o benzina: quale conviene?</h1>
   <p>Inserisci i dati delle due auto: calcoliamo il costo reale e i km all’anno oltre i quali l’elettrica conviene.</p>
 </section>
-<div class="calc" data-confronto-calc>
-<form class="calc-form" id="calc-form" novalidate aria-label="Dati del confronto">
-  <p class="calc-note">Valori di esempio: <strong>sostituiscili con i tuoi</strong>. Il risultato si aggiorna in tempo reale.</p>
-  <div class="grid-2">
-    ${c.field({ name: 'km', label: 'Km all’anno', unit: 'km', value: s.km, min: 100, max: 200000, step: 1, required: true })}
-    ${c.field({ name: 'anni', label: 'Anni di possesso', unit: 'anni', value: s.anni, min: 1, max: 30, step: 1, required: true })}
-  </div>
-
-  <details class="sezione" open>
-    <summary><span>Auto termica</span></summary>
-    <div class="sezione-body">
-      ${c.select({ prefix: 't', name: 't_alimentazione', label: 'Alimentazione', value: t.alimentazione, options: c.alimentazioniOptions(['benzina', 'diesel', 'gpl', 'metano', 'ibrida']) })}
-      <div class="grid-2">
-        ${ft({ name: 't_prezzo', label: 'Prezzo d’acquisto', unit: '€', max: 1000000, required: true })}
-        ${ft({ name: 't_svalPerc', label: 'Svalutazione annua', unit: '%', max: 60 })}
-        ${ft({ name: 't_consumo', label: 'Consumo medio', unit: 'l/100 km', max: 40 })}
-        ${ft({ name: 't_prezzoCarb', label: 'Prezzo carburante', unit: '€/l', max: 10, placeholder: 'Inserisci' })}
-        ${ft({ name: 't_rc', label: 'Assicurazione', unit: '€/anno', max: 20000 })}
-        ${ft({ name: 't_bollo', label: 'Bollo', unit: '€/anno', max: 10000 })}
-        ${ft({ name: 't_manutenzione', label: 'Manutenzione', unit: '€/anno', max: 20000 })}
-        ${ft({ name: 't_gommeCosto', label: 'Treno di gomme', unit: '€', max: 20000 })}
-        ${ft({ name: 't_gommeKm', label: 'Durata gomme', unit: 'km', min: 1000, max: 200000, step: 1 })}
-      </div>
-    </div>
-  </details>
-
-  <details class="sezione" open>
-    <summary><span>Auto elettrica</span></summary>
-    <div class="sezione-body">
-      <div class="grid-2">
-        ${fe({ name: 'e_prezzo', label: 'Prezzo d’acquisto', unit: '€', max: 1000000, required: true, hint: 'Al netto di eventuali incentivi.' })}
-        ${fe({ name: 'e_svalPerc', label: 'Svalutazione annua', unit: '%', max: 60 })}
-        ${fe({ name: 'e_consumoEl', label: 'Consumo medio', unit: 'kWh/100 km', max: 60 })}
-        ${fe({ name: 'e_percCasa', label: 'Ricarica a casa', unit: '%', max: 100 })}
-        ${fe({ name: 'e_prezzoCasa', label: 'Energia a casa', unit: '€/kWh', max: 5, placeholder: 'Inserisci' })}
-        ${fe({ name: 'e_prezzoColonnina', label: 'Colonnine', unit: '€/kWh', max: 5, placeholder: 'Inserisci' })}
-        ${fe({ name: 'e_rc', label: 'Assicurazione', unit: '€/anno', max: 20000 })}
-        ${fe({ name: 'e_bollo', label: 'Bollo', unit: '€/anno', max: 10000, hint: 'Spesso esente o ridotto: verifica la tua regione.' })}
-        ${fe({ name: 'e_manutenzione', label: 'Manutenzione', unit: '€/anno', max: 20000 })}
-        ${fe({ name: 'e_gommeCosto', label: 'Treno di gomme', unit: '€', max: 20000 })}
-        ${fe({ name: 'e_gommeKm', label: 'Durata gomme', unit: 'km', min: 1000, max: 200000, step: 1 })}
-      </div>
-    </div>
-  </details>
-  ${c.prezziInfo()}
-  ${c.affiliate('noleggio')}
-</form>
-
-<section class="risultati" id="risultati" aria-labelledby="ris-title">
-  <h2 id="ris-title" class="sr-only">Risultato del confronto</h2>
-  <div class="kpi kpi--hero pareggio-box">
-    <span class="kpi-label">Punto di pareggio</span>
-    <span class="pareggio-titolo" data-out="pareggioTitolo">${tp.titolo}</span>
-    <span class="pareggio-sotto" data-out="pareggioSotto">${tp.sotto}</span>
-  </div>
-  <div class="avvisi" data-out="avvisi">${res.avvisi.map((a) => `<p class="avviso">${a}</p>`).join('')}</div>
-  <div class="kpis kpis--2">
-    <div class="kpi"><span class="kpi-label" data-out="nomeT">${res.nomeT}</span><span class="kpi-value" data-out="tAnno">${euro(res.rt.totaleAnnuo)}/anno</span><span class="kpi-sub" data-out="tKm">${euro(res.rt.perKm, 3)}/km</span></div>
-    <div class="kpi"><span class="kpi-label">Auto elettrica</span><span class="kpi-value" data-out="eAnno">${euro(res.re.totaleAnnuo)}/anno</span><span class="kpi-sub" data-out="eKm">${euro(res.re.perKm, 3)}/km</span></div>
-  </div>
-  <p class="highlight" data-out="differenza">${testoDifferenza(res, s)}</p>
-  <figure class="chart">
-    <div class="line-box" data-chart="linee" role="img" aria-label="Costo annuo delle due auto in funzione dei km percorsi"></div>
-    <figcaption class="small">Costo annuo in funzione dei km percorsi. Il punto indica il pareggio, la linea verticale i tuoi km.</figcaption>
-  </figure>
-  <div class="table-scroll" tabindex="0" role="region" aria-label="Tabella di confronto">
-    <table data-out="tabella">${tabellaConfronto(res, s)}</table>
-  </div>
-  ${c.actions()}
-  ${c.disclaimer()}
-</section>
-</div>
-<a class="sticky-ris" href="#risultati" data-sticky hidden><span data-out="stickyText">Vedi il risultato</span> <span aria-hidden="true">↓</span></a>
+${confrontoTool(c, 'elettrica-benzina')}
 ${c.ad('dopo-calcolatore', 'wide')}
 <div class="layout-article">
 <div>
@@ -184,6 +99,5 @@ ${correlati('/confronto-elettrica-benzina/')}
 </div>
 <aside aria-label="Pubblicità">${c.ad('laterale', 'side')}</aside>
 </div>
-</div>`;
-  },
+</div>`,
 };

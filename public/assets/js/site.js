@@ -26,6 +26,31 @@
     });
   }
 
+  /* ---------- Tema: automatico → chiaro → scuro ---------- */
+  var TEMA = 'costokm_tema';
+  var NOMI = { auto: 'automatico', light: 'chiaro', dark: 'scuro' };
+  var temaBtn = document.querySelector('[data-theme-toggle]');
+  function applicaTema(t) {
+    if (t === 'light' || t === 'dark') document.documentElement.setAttribute('data-theme', t);
+    else document.documentElement.removeAttribute('data-theme');
+    if (temaBtn) {
+      temaBtn.setAttribute('aria-label', 'Tema: ' + NOMI[t] + '. Cambia tema');
+      temaBtn.setAttribute('title', 'Tema: ' + NOMI[t]);
+    }
+  }
+  if (temaBtn) {
+    var temaCorrente = document.documentElement.getAttribute('data-theme') || 'auto';
+    applicaTema(temaCorrente);
+    temaBtn.addEventListener('click', function () {
+      temaCorrente = temaCorrente === 'auto' ? 'light' : temaCorrente === 'light' ? 'dark' : 'auto';
+      applicaTema(temaCorrente);
+      try {
+        if (temaCorrente === 'auto') localStorage.removeItem(TEMA);
+        else localStorage.setItem(TEMA, temaCorrente);
+      } catch (e) { /* storage non disponibile */ }
+    });
+  }
+
   /* ---------- Consenso ---------- */
   function leggiConsenso() {
     try {

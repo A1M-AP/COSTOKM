@@ -1,11 +1,14 @@
 import { esc, jsonLd } from './util.mjs';
+import { STRUMENTI } from './correlati.mjs';
 
 const NAV = [
   { href: '/', label: 'Calcolatore' },
-  { href: '/confronto-elettrica-benzina/', label: 'Elettrica vs benzina' },
+  { href: '/prezzo-benzina-oggi/', label: 'Prezzi oggi' },
+  { href: '/confronto-elettrica-benzina/', label: 'Confronti' },
+  { href: '/rimborso-chilometrico/', label: 'Rimborso km' },
   { href: '/costo-carburante-viaggio/', label: 'Costo viaggio' },
-  { href: '/costo-auto-neopatentati/', label: 'Neopatentati' },
 ];
+const CONFRONTI = ['/confronto-elettrica-benzina/', '/diesel-o-benzina/', '/costo-auto-ibrida/', '/gpl-o-metano/'];
 
 const FOOTER_LINKS = [
   { href: '/chi-siamo/', label: 'Chi siamo' },
@@ -99,7 +102,9 @@ export function layout({ page, body, css, cfg, runtimeConfig }) {
   const title = page.title;
   const ogImage = s.url + '/og-image.png';
   const nav = NAV.map((l) => {
-    const current = l.href === page.path ? ' aria-current="page"' : '';
+    const current = l.href === page.path
+      ? ' aria-current="page"'
+      : l.label === 'Confronti' && CONFRONTI.includes(page.path) ? ' class="is-section"' : '';
     return `<li><a href="${l.href}"${current}>${l.label}</a></li>`;
   }).join('');
   const footerLinks = FOOTER_LINKS.map((l) => `<li><a href="${l.href}">${l.label}</a></li>`).join('');
@@ -122,6 +127,7 @@ export function layout({ page, body, css, cfg, runtimeConfig }) {
 <meta name="description" content="${esc(page.description)}">
 ${page.noindex ? '<meta name="robots" content="noindex, follow">' : `<link rel="canonical" href="${url}">\n<meta name="robots" content="index, follow, max-image-preview:large">`}
 <meta name="color-scheme" content="light dark">
+<script>try{var t=localStorage.getItem('costokm_tema');if(t==='light'||t==='dark')document.documentElement.setAttribute('data-theme',t)}catch(e){}</script>
 <meta name="theme-color" content="#f3f5fa" media="(prefers-color-scheme: light)">
 <meta name="theme-color" content="#0a111d" media="(prefers-color-scheme: dark)">
 <meta property="og:type" content="website">
@@ -147,8 +153,15 @@ ${structuredData(page, cfg)}
 <header class="site-header">
   <div class="wrap header-inner">
     <a class="logo" href="/"><span class="logo-mark" aria-hidden="true">€/km</span><span>costo<b>km</b>.it</span></a>
-    <button class="menu-toggle" type="button" aria-expanded="false" aria-controls="menu-principale">Menu</button>
     <nav class="main-nav" id="menu-principale" aria-label="Principale"><ul>${nav}</ul></nav>
+    <div class="header-tools">
+      <button class="theme-toggle" type="button" data-theme-toggle aria-label="Tema: automatico. Cambia tema" title="Tema: automatico">
+        <svg class="i-auto" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8.5" fill="none" stroke="currentColor" stroke-width="2"/><path d="M12 3.5a8.5 8.5 0 0 1 0 17z" fill="currentColor"/></svg>
+        <svg class="i-sun" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4.5" fill="currentColor"/><g stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 2v2.5M12 19.5V22M2 12h2.5M19.5 12H22M4.9 4.9l1.8 1.8M17.3 17.3l1.8 1.8M4.9 19.1l1.8-1.8M17.3 6.7l1.8-1.8"/></g></svg>
+        <svg class="i-moon" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 14.5A8.5 8.5 0 0 1 9.5 4a8.5 8.5 0 1 0 10.5 10.5z" fill="currentColor"/></svg>
+      </button>
+      <button class="menu-toggle" type="button" aria-expanded="false" aria-controls="menu-principale">Menu</button>
+    </div>
   </div>
 </header>
 ${breadcrumb}
@@ -163,7 +176,7 @@ ${body}
         <p>${esc(s.descrizioneBreve)}</p>
         <p class="small">I risultati sono indicativi e dipendono interamente dai dati inseriti dall’utente. Non costituiscono consulenza finanziaria, assicurativa o fiscale.</p>
       </div>
-      <nav aria-label="Strumenti"><p class="footer-title">Strumenti</p><ul>${NAV.map((l) => `<li><a href="${l.href}">${l.label}</a></li>`).join('')}</ul></nav>
+      <nav aria-label="Strumenti"><p class="footer-title">Strumenti</p><ul>${STRUMENTI.map((l) => `<li><a href="${l.href}">${l.titolo}</a></li>`).join('')}</ul></nav>
       <nav aria-label="Informazioni"><p class="footer-title">Informazioni</p><ul>${footerLinks}${haServizi(cfg) ? '<li><button type="button" class="linklike" data-cookie-settings>Preferenze cookie</button></li>' : ''}</ul></nav>
     </div>
     <p class="small footer-aff">Alcuni link presenti sul sito sono link di affiliazione: se sottoscrivi un servizio tramite essi potremmo ricevere una commissione, senza costi aggiuntivi per te. ${esc(s.nome)} non svolge attività di intermediazione assicurativa né finanziaria.</p>
@@ -172,6 +185,7 @@ ${body}
 </footer>
 ${cookieBanner(cfg)}
 <script src="/assets/js/site.js" defer></script>
+${cfg.statistiche.cloudflareToken ? `<script defer src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='${JSON.stringify({ token: cfg.statistiche.cloudflareToken }).replace(/'/g, '&#39;')}'></script>` : ''}
 ${scripts}
 </body>
 </html>

@@ -23,6 +23,8 @@ import { fileURLToPath } from 'node:url';
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..');
 const FILE = join(ROOT, 'public/data/prezzi.json');
+const FILE_REGIONI = join(ROOT, 'public/data/prezzi-regioni.json');
+const FILE_STORICO = join(ROOT, 'public/data/storico-prezzi.json');
 // MIMIT_BASE_URL permette di provare lo script contro una copia locale dei CSV
 const BASE = process.env.MIMIT_BASE_URL || 'https://www.mimit.gov.it/images/exportCSV/';
 const URL_PREZZI = BASE + 'prezzo_alle_8.csv';
@@ -82,16 +84,65 @@ export function impiantiAutostradali(anagrafica) {
   return set;
 }
 
+/** Sigla della provincia → regione (le sigle non riconosciute vengono ignorate nelle medie regionali). */
+const PROVINCE = {
+  Abruzzo: 'AQ CH PE TE',
+  Basilicata: 'MT PZ',
+  Calabria: 'CS CZ KR RC VV',
+  Campania: 'AV BN CE NA SA',
+  'Emilia-Romagna': 'BO FC FE MO PC PR RA RE RN',
+  'Friuli-Venezia Giulia': 'GO PN TS UD',
+  Lazio: 'FR LT RI RM VT',
+  Liguria: 'GE IM SP SV',
+  Lombardia: 'BG BS CO CR LC LO MB MI MN PV SO VA',
+  Marche: 'AN AP FM MC PU',
+  Molise: 'CB IS',
+  Piemonte: 'AL AT BI CN NO TO VB VC',
+  Puglia: 'BA BR BT FG LE TA',
+  Sardegna: 'CA CI NU OG OR OT SS SU VS',
+  Sicilia: 'AG CL CT EN ME PA RG SR TP',
+  Toscana: 'AR FI GR LI LU MS PI PO PT SI',
+  'Trentino-Alto Adige': 'BZ TN',
+  Umbria: 'PG TR',
+  "Valle d'Aosta": 'AO',
+  Veneto: 'BL PD RO TV VE VI VR',
+};
+export const REGIONE_DI_PROVINCIA = Object.fromEntries(Object.entries(PROVINCE).flatMap(([r, sigle]) => sigle.split(' ').map((s) => [s, r])));
+
+/** Funzione id impianto → regione, dall'anagrafica (colonna Provincia). */
+export function regioneDiImpianto(anagrafica) {
+  const mappa = new Map();
+  for (const r of anagrafica.rows) {
+    const regione = REGIONE_DI_PROVINCIA[campo(r, 'provincia').toUpperCase()];
+    if (regione) mappa.set(campo(r, 'idimpianto'), regione);
+  }
+  return (id) => mappa.get(id) || null;
+}
+
+const media = (acc) => {
+  const out = {};
+  for (const [k, m] of Object.entries(acc)) {
+    const v = [...m.values()];
+    out[k] = { media: v.length ? Math.round((v.reduce((a, b) => a + b, 0) / v.length) * 1000) / 1000 : null, impianti: v.length };
+  }
+  return out;
+};
+
 /**
- * Media nazionale per ciascun carburante.
- * @returns {Record<string, {media:number, impianti:number}>}
+ * Medie per carburante. Senza `gruppoDi` restituisce la media nazionale
+ * { benzina: {media, impianti}, ... }; con `gruppoDi(id)` restituisce { gruppo: {...} }.
  */
-export function calcolaMedie(prezzi, esclusi = new Set()) {
-  const acc = {};
-  for (const k of Object.keys(CARBURANTI)) acc[k] = new Map();
+export function calcolaMedie(prezzi, esclusi = new Set(), gruppoDi = null) {
+  const gruppi = new Map();
+  const accDi = (g) => {
+    if (!gruppi.has(g)) gruppi.set(g, Object.fromEntries(Object.keys(CARBURANTI).map((k) => [k, new Map()])));
+    return gruppi.get(g);
+  };
   for (const r of prezzi.rows) {
     const id = campo(r, 'idimpianto');
     if (esclusi.has(id)) continue;
+    const g = gruppoDi ? gruppoDi(id) : 'italia';
+    if (!g) continue;
     const desc = campo(r, 'desccarburante', 'carburante').toLowerCase();
     const selfRaw = campo(r, 'isself', 'self').toLowerCase();
     const self = selfRaw === '1' || selfRaw === 'true' || selfRaw === 's';
@@ -100,16 +151,31 @@ export function calcolaMedie(prezzi, esclusi = new Set()) {
       if (desc !== c.desc || self !== c.self) continue;
       if (!(prezzo >= c.min && prezzo <= c.max)) continue;
       // un solo prezzo per impianto (se ripetuto si tiene il più basso, come esposto al pubblico)
-      const prima = acc[k].get(id);
-      if (prima === undefined || prezzo < prima) acc[k].set(id, prezzo);
+      const acc = accDi(g)[k];
+      const prima = acc.get(id);
+      if (prima === undefined || prezzo < prima) acc.set(id, prezzo);
     }
   }
-  const out = {};
-  for (const [k, m] of Object.entries(acc)) {
-    const v = [...m.values()];
-    out[k] = { media: v.length ? Math.round((v.reduce((a, b) => a + b, 0) / v.length) * 1000) / 1000 : null, impianti: v.length };
+  if (!gruppoDi) return media(accDi('italia'));
+  return Object.fromEntries([...gruppi].sort(([a], [b]) => a.localeCompare(b, 'it')).map(([g, acc]) => [g, media(acc)]));
+}
+
+/** Medie regionali in forma compatta per il sito; valori con meno di 5 impianti → null. */
+export function riassuntoRegioni(medieRegioni, { riferimento, oggi }) {
+  const regioni = {};
+  for (const [r, m] of Object.entries(medieRegioni)) {
+    regioni[r] = Object.fromEntries(Object.entries(m).map(([k, v]) => [k, v.impianti >= 5 ? v.media : null]));
+    regioni[r].impianti = Math.max(...Object.values(m).map((v) => v.impianti));
   }
-  return out;
+  return { riferimento, aggiornato: oggi, fonte: 'Elaborazione costokm.it su open data MIMIT – Osservaprezzi carburanti (rete stradale; self per benzina e gasolio, servito per GPL e metano)', regioni };
+}
+
+/** Aggiunge (o sostituisce) la media nazionale del giorno nello storico, tenendo gli ultimi 2 anni. */
+export function aggiornaStorico(storico, riferimento, medie) {
+  const serie = (storico?.serie || []).filter((x) => x.data !== riferimento);
+  serie.push({ data: riferimento, ...Object.fromEntries(Object.entries(medie).map(([k, v]) => [k, v.media])) });
+  serie.sort((a, b) => a.data.localeCompare(b.data));
+  return { fonte: 'Medie nazionali giornaliere, rete stradale (open data MIMIT – Osservaprezzi carburanti)', serie: serie.slice(-730) };
 }
 
 const giorniDa = (iso, oggi) => (iso ? Math.round((new Date(oggi) - new Date(iso)) / 86400000) : Infinity);
@@ -181,8 +247,17 @@ async function main() {
   const json = JSON.parse(await readFile(FILE, 'utf8'));
   const { cambiati, avvisi } = applicaMedie(json, medie, { riferimento, oggi });
   avvisi.forEach((a) => console.log('⚠ ' + a));
+  // Promemoria per i prezzi da aggiornare a mano (letto dall'azione GitHub per aprire una segnalazione)
+  if (process.env.AVVISI_FILE) await writeFile(process.env.AVVISI_FILE, avvisi.join('\n'));
+
+  const regioni = riassuntoRegioni(calcolaMedie(prezzi, esclusi, regioneDiImpianto(anagrafica)), { riferimento, oggi });
+  console.log(`Medie regionali: ${Object.keys(regioni.regioni).length} regioni`);
+  const storico = aggiornaStorico(await readFile(FILE_STORICO, 'utf8').then(JSON.parse, () => null), riferimento, medie);
+
   if (dryRun) return;
   await writeFile(FILE, JSON.stringify(json, null, 2) + '\n');
+  await writeFile(FILE_REGIONI, JSON.stringify(regioni, null, 2) + '\n');
+  await writeFile(FILE_STORICO, JSON.stringify(storico, null, 1) + '\n');
   console.log(cambiati.length ? `Aggiornati: ${cambiati.join(', ')}` : 'Nessuna variazione di prezzo (data aggiornata).');
 }
 

@@ -41,6 +41,7 @@ export default {
 
   <h2>Cookie e strumenti utilizzati dal Sito</h2>
   ${tabella}
+  ${cfg._cfAnalytics ? '<p>Le statistiche di visita sono raccolte con <strong>Cloudflare Web Analytics</strong>, che non installa cookie né usa l’archivio locale del browser e non richiede quindi il consenso. Maggiori dettagli nella <a href="/privacy-policy/">privacy policy</a>.</p>' : ''}
   <p>I calcolatori non usano cookie: i dati che inserisci restano nella pagina e vengono persi alla chiusura, salvo che tu li includa in un link con la funzione “Condividi”.</p>
 
   ${consenso ? `<h2>Come raccogliamo il consenso</h2>

@@ -1,0 +1,12 @@
+{
+ "fonte": "Medie nazionali giornaliere, rete stradale (open data MIMIT – Osservaprezzi carburanti)",
+ "serie": [
+  {
+   "data": "2026-09-30",
+   "benzina": 2.11,
+   "diesel": 2.315,
+   "gpl": 0.748,
+   "metano": 1.885
+  }
+ ]
+}

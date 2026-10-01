@@ -98,3 +98,14 @@ test('costo viaggio andata e ritorno', () => {
   close(t.totale, 72 + 40 + 10);
   close(t.perPersona, 61);
 });
+
+test('rimborso chilometrico', async () => {
+  const { rimborsoChilometrico } = await import('../public/assets/js/calc.js');
+  const r = rimborsoChilometrico({ km: 60, andataRitorno: true, trasferte: 4, tariffa: 0.5, extra: 3, costoReale: 0.4 });
+  assert.equal(r.km, 480);
+  close(r.chilometrico, 240);
+  close(r.totale, 252);
+  close(r.costoReale, 192);
+  close(r.copertura, 1.25);
+  assert.equal(rimborsoChilometrico({ km: 10, tariffa: 0.3 }).costoReale, null);
+});

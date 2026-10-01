@@ -1,7 +1,7 @@
-/** Pagina /confronto-elettrica-benzina/: costo termica vs elettrica e punto di pareggio. */
-import { CONFRONTO_DEFAULT, CONSUMO_DEFAULT } from './defaults.js';
+/** Pagine di confronto tra due auto (A e B, qualsiasi alimentazione) con punto di pareggio. */
+import { CONFRONTO_PRESET, CONSUMO_DEFAULT } from './defaults.js';
 import { ALIMENTAZIONI } from './calc.js';
-import { calcolaConfronto, testoPareggio, testoDifferenza, tabellaConfronto, CAMPI_T, CAMPI_E } from './confronto-core.js';
+import { calcolaConfronto, testoPareggio, testoDifferenza, tabellaConfronto, applicaPrezziAuto, CAMPI } from './confronto-core.js';
 import { euro, num, readField, writeField, validateField, caricaPrezzi, chiavePrezzo, bindActions, paramsFromUrl, parseParam, escHtml, animaNumero } from './ui.js';
 import { lineChart, onResize } from './charts.js';
 import { anniLabel } from './testi.js';
@@ -9,37 +9,44 @@ import { anniLabel } from './testi.js';
 const root = document.querySelector('[data-confronto-calc]');
 const form = root.querySelector('#calc-form');
 const out = (n) => document.querySelector(`[data-out="${n}"]`);
-const D = CONFRONTO_DEFAULT;
-const state = { km: D.km, anni: D.anni, termica: { ...D.termica }, elettrica: { ...D.elettrica } };
+const P = CONFRONTO_PRESET[root.dataset.preset] || CONFRONTO_PRESET['elettrica-benzina'];
+const state = { km: P.km, anni: P.anni, a: { ...P.a }, b: { ...P.b } };
 let prezzi = {};
 let ultimo = null;
 
-// Parametri dall'URL (link "Condividi")
+// Parametri dall'URL (link "Condividi"): km, anni, a_<campo>, b_<campo>
 const p = paramsFromUrl();
 for (const k of ['km', 'anni']) { const v = parseParam(p.get(k)); if (typeof v === 'number') state[k] = v; }
-for (const k of CAMPI_T) {
-  const raw = p.get('t_' + k);
-  if (raw === null) continue;
-  if (k === 'alimentazione') { if (ALIMENTAZIONI[raw] && raw !== 'elettrica') state.termica.alimentazione = raw; } else { const v = parseParam(raw); if (typeof v === 'number') state.termica[k] = v; }
+for (const l of ['a', 'b']) {
+  for (const k of CAMPI) {
+    const raw = p.get(`${l}_${k}`);
+    if (raw === null) continue;
+    if (k === 'alimentazione') { if (ALIMENTAZIONI[raw]) state[l].alimentazione = raw; } else { const v = parseParam(raw); if (typeof v === 'number') state[l][k] = v; }
+  }
 }
-for (const k of CAMPI_E) { const v = parseParam(p.get('e_' + k)); if (typeof v === 'number') state.elettrica[k] = v; }
+
+function aggiornaScheda(l) {
+  const v = state[l];
+  const el = v.alimentazione === 'elettrica';
+  form.querySelector(`[data-group="${l}-termica"]`).hidden = el;
+  form.querySelector(`[data-group="${l}-elettrica"]`).hidden = !el;
+  const a = ALIMENTAZIONI[v.alimentazione];
+  const set = (name, txt) => form.querySelectorAll(`[data-unit-for="${name}"]`).forEach((u) => { u.textContent = u.classList.contains('unit-label') ? `(${txt})` : txt; });
+  if (!el) { set(`${l}_consumo`, a.unitaConsumo); set(`${l}_prezzoCarb`, a.unitaPrezzo); }
+}
 
 function scriviForm() {
   writeField(form, 'km', state.km);
   writeField(form, 'anni', state.anni);
-  CAMPI_T.forEach((k) => writeField(form, 't_' + k, state.termica[k]));
-  CAMPI_E.forEach((k) => writeField(form, 'e_' + k, state.elettrica[k]));
-  aggiornaUnita();
-}
-
-function aggiornaUnita() {
-  const a = ALIMENTAZIONI[state.termica.alimentazione];
-  form.querySelectorAll('[data-unit-for="t_consumo"]').forEach((u) => { u.textContent = u.classList.contains('unit-label') ? `(${a.unitaConsumo})` : a.unitaConsumo; });
-  form.querySelectorAll('[data-unit-for="t_prezzoCarb"]').forEach((u) => { u.textContent = u.classList.contains('unit-label') ? `(${a.unitaPrezzo})` : a.unitaPrezzo; });
+  for (const l of ['a', 'b']) {
+    CAMPI.forEach((k) => writeField(form, `${l}_${k}`, state[l][k]));
+    aggiornaScheda(l);
+  }
 }
 
 function valido() {
   return [...form.querySelectorAll('input[type="number"]')].every((el) => {
+    if (el.closest('[hidden]')) return true;
     if (el.validity.badInput) return false;
     if (el.value === '') return !el.required;
     const n = Number(el.value);
@@ -61,20 +68,23 @@ function render() {
   out('pareggioTitolo').textContent = tp.titolo;
   out('pareggioSotto').innerHTML = tp.sotto;
   out('avvisi').innerHTML = res.avvisi.map((a) => `<p class="avviso">${escHtml(a)}</p>`).join('');
-  out('nomeT').textContent = res.nomeT;
-  animaNumero(out('tAnno'), res.rt.totaleAnnuo, (x) => `${euro(x)}/anno`);
-  animaNumero(out('tKm'), res.rt.perKm, (x) => `${euro(x, 3)}/km`);
-  animaNumero(out('eAnno'), res.re.totaleAnnuo, (x) => `${euro(x)}/anno`);
-  animaNumero(out('eKm'), res.re.perKm, (x) => `${euro(x, 3)}/km`);
+  out('nomeA').textContent = res.nomeA;
+  out('nomeB').textContent = res.nomeB;
+  out('titolo-a').textContent = res.nomeA;
+  out('titolo-b').textContent = res.nomeB;
+  animaNumero(out('aAnno'), res.ra.totaleAnnuo, (x) => `${euro(x)}/anno`);
+  animaNumero(out('aKm'), res.ra.perKm, (x) => `${euro(x, 3)}/km`);
+  animaNumero(out('bAnno'), res.rb.totaleAnnuo, (x) => `${euro(x)}/anno`);
+  animaNumero(out('bKm'), res.rb.perKm, (x) => `${euro(x, 3)}/km`);
   out('differenza').innerHTML = testoDifferenza(res, state);
   out('tabella').innerHTML = tabellaConfronto(res, state);
-  out('stickyText').textContent = tp.titolo.replace('L’elettrica conviene', 'Elettrica conveniente');
+  out('stickyText').textContent = tp.titolo;
 
   const pk = res.p.km;
   const xMax = Math.max(30000, state.km * 1.5, pk && pk > 0 ? Math.min(pk * 1.6, 150000) : 0);
   lineChart(root.querySelector('[data-chart="linee"]'), [
-    { nome: res.nomeT, slot: 2, f: (km) => res.rt.fissoAnnuo + res.rt.variabilePerKm * km },
-    { nome: 'Auto elettrica', slot: 1, f: (km) => res.re.fissoAnnuo + res.re.variabilePerKm * km },
+    { nome: res.nomeA, slot: 2, f: (km) => res.ra.fissoAnnuo + res.ra.variabilePerKm * km },
+    { nome: res.nomeB, slot: 1, f: (km) => res.rb.fissoAnnuo + res.rb.variabilePerKm * km },
   ], { xMax: Math.ceil(xMax / 10000) * 10000, pareggio: res.p.esito === 'oltre' || res.p.esito === 'sotto' ? pk : null, kmUtente: state.km });
 }
 
@@ -83,32 +93,35 @@ function onInput(e) {
   if (!t.name) return;
   if (t.type === 'number') validateField(t);
   const val = readField(t);
-  if (t.name === 'km' || t.name === 'anni') state[t.name] = val;
-  else if (t.name.startsWith('t_')) {
+  if (t.name === 'km' || t.name === 'anni') {
+    state[t.name] = val;
+  } else if (/^[ab]_/.test(t.name)) {
+    const l = t.name[0];
     const k = t.name.slice(2);
-    state.termica[k] = val;
+    state[l][k] = val;
     if (k === 'alimentazione') {
-      state.termica.consumo = CONSUMO_DEFAULT[val] ?? state.termica.consumo;
-      state.termica.prezzoCarb = prezzi[chiavePrezzo(val)] ?? null;
-      writeField(form, 't_consumo', state.termica.consumo);
-      writeField(form, 't_prezzoCarb', state.termica.prezzoCarb);
-      aggiornaUnita();
+      if (val !== 'elettrica') {
+        state[l].consumo = CONSUMO_DEFAULT[val] ?? state[l].consumo;
+        state[l].prezzoCarb = prezzi[chiavePrezzo(val)] ?? null;
+        writeField(form, `${l}_consumo`, state[l].consumo);
+        writeField(form, `${l}_prezzoCarb`, state[l].prezzoCarb);
+      }
+      aggiornaScheda(l);
     }
-  } else if (t.name.startsWith('e_')) state.elettrica[t.name.slice(2)] = val;
+  }
   render();
 }
 
 function url() {
   const q = new URLSearchParams({ km: state.km, anni: state.anni });
-  CAMPI_T.forEach((k) => { if (state.termica[k] !== null && state.termica[k] !== undefined) q.set('t_' + k, state.termica[k]); });
-  CAMPI_E.forEach((k) => { if (state.elettrica[k] !== null && state.elettrica[k] !== undefined) q.set('e_' + k, state.elettrica[k]); });
+  for (const l of ['a', 'b']) CAMPI.forEach((k) => { const v = state[l][k]; if (v !== null && v !== undefined) q.set(`${l}_${k}`, v); });
   return `${location.origin}${location.pathname}?${q}`;
 }
 
 function testo() {
   const r = ultimo || calcolaConfronto(state);
   const tp = testoPareggio(r);
-  return `${tp.titolo}.\n${r.nomeT}: ${euro(r.rt.totaleAnnuo)}/anno (${euro(r.rt.perKm, 3)}/km)\nAuto elettrica: ${euro(r.re.totaleAnnuo)}/anno (${euro(r.re.perKm, 3)}/km)\nCon ${num(state.km)} km/anno per ${anniLabel(state.anni)}.\nCalcolo: ${url()}\nRisultati indicativi basati sui dati inseriti.`;
+  return `${tp.titolo}.\n${r.nomeA}: ${euro(r.ra.totaleAnnuo)}/anno (${euro(r.ra.perKm, 3)}/km)\n${r.nomeB}: ${euro(r.rb.totaleAnnuo)}/anno (${euro(r.rb.perKm, 3)}/km)\nCon ${num(state.km)} km/anno per ${anniLabel(state.anni)}.\nCalcolo: ${url()}\nRisultati indicativi basati sui dati inseriti.`;
 }
 
 form.addEventListener('input', onInput);
@@ -116,11 +129,11 @@ form.addEventListener('submit', (e) => e.preventDefault());
 bindActions(root, { testo, url, titolo: document.title });
 onResize(render);
 
+// Primo calcolo dopo il caricamento dei prezzi: l'HTML è già precompilato con gli stessi valori.
 caricaPrezzi().then((pr) => {
   prezzi = pr || {};
-  if (state.termica.prezzoCarb === null) state.termica.prezzoCarb = prezzi[chiavePrezzo(state.termica.alimentazione)] ?? null;
-  if (state.elettrica.prezzoCasa === null) state.elettrica.prezzoCasa = prezzi.elettricita_casa ?? null;
-  if (state.elettrica.prezzoColonnina === null) state.elettrica.prezzoColonnina = prezzi.elettricita_colonnina ?? null;
+  applicaPrezziAuto(state.a, prezzi);
+  applicaPrezziAuto(state.b, prezzi);
   scriviForm();
   render();
 });

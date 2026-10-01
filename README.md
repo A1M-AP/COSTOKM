@@ -11,12 +11,22 @@ Sito statico, veloce e mobile-first che calcola il **costo reale di possesso di 
 | URL | Contenuto |
 |---|---|
 | `/` | Calcolatore principale "Quanto ti costa davvero la tua auto" (fino a 3 auto a confronto) |
-| `/confronto-elettrica-benzina/` | Elettrica vs termica con chilometraggio annuo di pareggio e grafico |
+| `/prezzo-benzina-oggi/` | Prezzi medi di oggi (benzina, gasolio, GPL, metano), medie per regione e andamento: si aggiorna da sola ogni giorno |
+| `/quanto-costa-un-auto-al-mese/` | Calcolatore principale con contenuto dedicato al costo mensile |
+| `/confronto-elettrica-benzina/` | Elettrica o benzina, con chilometraggio di pareggio |
+| `/diesel-o-benzina/` | Diesel o benzina, con chilometraggio di pareggio |
+| `/costo-auto-ibrida/` | Ibrida o benzina, con chilometraggio di pareggio |
+| `/gpl-o-metano/` | GPL o metano, con chilometraggio di pareggio |
+| `/rimborso-chilometrico/` | Rimborso chilometrico (tariffa ACI o aziendale) e confronto con il costo reale |
 | `/costo-carburante-viaggio/` | Costo carburante/energia di un singolo tragitto, con pedaggi e quota a persona |
 | `/costo-auto-neopatentati/` | Calcolatore principale con valori di partenza tipici della prima auto |
 | `/chi-siamo/`, `/contatti/`, `/privacy-policy/`, `/cookie-policy/`, `/note-legali/` | Pagine istituzionali |
 
+I quattro confronti usano lo stesso componente (`src/confronto-tool.mjs`, `public/assets/js/confronto.js`): due auto con qualsiasi alimentazione, preimpostate in `CONFRONTO_PRESET` (`public/assets/js/defaults.js`). Per aggiungere un nuovo confronto basta un preset e una pagina in `src/pages/`.
+
 Generati automaticamente: `sitemap.xml`, `robots.txt`, `404.html`, canonici, Open Graph, dati strutturati (`WebSite`, `WebApplication`, `BreadcrumbList`, `FAQPage`).
+
+Tema chiaro/scuro: segue il dispositivo; il pulsante nell'header permette di scegliere automatico, chiaro o scuro (scelta salvata nel browser).
 
 ## Avvio rapido
 
@@ -68,7 +78,11 @@ Protezioni: se i dati mancano, sono troppo pochi o cambiano più del 25% rispett
 
 Prova locale senza scrivere: `node scripts/aggiorna-prezzi.mjs --dry-run`.
 
-### Energia elettrica: aggiornamento manuale
+Lo stesso script produce anche `public/data/prezzi-regioni.json` (medie per regione, dalla provincia di ogni impianto) e aggiunge la media del giorno a `public/data/storico-prezzi.json` (ultimi 2 anni), usati dalla pagina `/prezzo-benzina-oggi/`.
+
+### Energia elettrica: aggiornamento manuale con promemoria
+Quando i prezzi dell'energia superano l'età prevista (ARERA oltre 100 giorni, colonnine oltre 75), l'azione GitHub apre una segnalazione *"Aggiornare i prezzi dell'energia elettrica"* nella sezione Issues del repository (GitHub ti avvisa via email). Chiudila dopo aver aggiornato i valori.
+
 Per energia domestica e colonnine non esistono dati aperti scaricabili; lo script segnala nel log quando sono vecchi.
 
 | Voce | Valore attuale | Fonte | Frequenza |
@@ -107,9 +121,16 @@ Sezione `pubblicita` di `config/site.config.json`:
 - Lo script AdSense viene caricato **solo dopo il consenso** alla categoria Pubblicità.
 - ⚠️ Per servire annunci Google a utenti nello Spazio economico europeo Google richiede una **CMP certificata IAB TCF**. Il banner incluso blocca correttamente gli script prima del consenso (conforme alle linee guida del Garante), ma non è una CMP certificata TCF: prima di attivare AdSense valuta di integrarne una (es. la CMP di Google "Privacy e messaggi") e adegua la cookie policy.
 
-## Statistiche (facoltative)
+## Statistiche
 
-Inserisci l'ID GA4 in `statistiche.ga4Id`: lo script viene caricato solo dopo il consenso alla categoria Statistiche. Lasciandolo vuoto non viene caricato nulla.
+**Consigliato: Cloudflare Web Analytics** (gratuito, senza cookie, non richiede il banner):
+1. Dashboard Cloudflare → *Analytics & Logs → Web Analytics → Add a site*, inserisci il dominio.
+2. Copia il token del codice proposto (`data-cf-beacon='{"token": "…"}'`) in `statistiche.cloudflareToken` di `config/site.config.json`.
+3. In alternativa, se il dominio è su Cloudflare, scegli l'installazione automatica e imposta solo `statistiche.cloudflareAttivo: true`.
+
+In entrambi i casi privacy e cookie policy si aggiornano da sole al build.
+
+Google Analytics 4 (`statistiche.ga4Id`) resta possibile, ma usa cookie: viene caricato solo dopo il consenso e attiva il banner.
 
 ## Cookie e privacy
 

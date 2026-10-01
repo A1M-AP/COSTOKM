@@ -44,7 +44,9 @@
     }
   },
   "statistiche": {
-    "_nota": "Facoltativo. Inserisci l'ID di misurazione GA4 (G-XXXXXXX). Lo script viene caricato solo dopo il consenso alla categoria Statistiche.",
+    "_nota": "cloudflareToken: Cloudflare Web Analytics, senza cookie e senza banner (consigliato). In alternativa, se il dominio è su Cloudflare, puoi attivarlo dalla dashboard con installazione automatica e lasciare vuoto il token, ma imposta comunque cloudflareAttivo a true per aggiornare la privacy policy. ga4Id: Google Analytics 4, caricato solo dopo il consenso.",
+    "cloudflareToken": "",
+    "cloudflareAttivo": false,
     "ga4Id": ""
   },
   "consensoCookie": {

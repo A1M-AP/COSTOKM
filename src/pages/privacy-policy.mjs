@@ -28,6 +28,8 @@ export default {
   <p>I sistemi del fornitore di hosting acquisiscono, nel normale funzionamento, alcuni dati la cui trasmissione è implicita nell’uso dei protocolli di Internet: indirizzo IP, data e ora della richiesta, pagina richiesta, codice di risposta, tipo di browser e sistema operativo, sito di provenienza. Questi dati non sono usati per identificarti e servono solo a garantire il funzionamento e la sicurezza del Sito.</p>
   <h3>c) Dati che ci invii volontariamente</h3>
   <p>Se ci scrivi via e-mail trattiamo il tuo indirizzo e il contenuto del messaggio per risponderti.</p>
+  ${cfg._cfAnalytics ? `<h3>Statistiche senza cookie</h3>
+  <p>Per conoscere in forma aggregata quante persone visitano il Sito e quali pagine leggono usiamo <strong>Cloudflare Web Analytics</strong> (Cloudflare, Inc.). Lo strumento non installa cookie, non usa l’archivio locale del browser, non crea profili e non traccia gli utenti tra siti diversi: elabora i dati tecnici della visita (pagina, provenienza, tipo di dispositivo e browser, paese) senza conservare l’indirizzo IP. Base giuridica: legittimo interesse del Titolare a migliorare il Sito (art. 6.1.f GDPR).</p>` : ''}
   ${consenso ? `<h3>d) Cookie e strumenti di terze parti, solo con il tuo consenso</h3>
   <p>Solo se presti il consenso tramite il banner, il Sito utilizza:</p>
   <ul>
@@ -39,6 +41,7 @@ export default {
 
   ${sez('Finalità e basi giuridiche')}
   <ul>
+    ${cfg._cfAnalytics ? '<li><strong>Statistiche aggregate senza cookie</strong> (Cloudflare Web Analytics): legittimo interesse del Titolare (art. 6.1.f GDPR).</li>' : ''}
     <li><strong>Erogazione e sicurezza del Sito</strong> (dati di navigazione): legittimo interesse del Titolare a fornire un servizio funzionante e sicuro (art. 6.1.f GDPR).</li>
     <li><strong>Risposta alle richieste di contatto</strong>: esecuzione di misure richieste dall’interessato (art. 6.1.b GDPR) e legittimo interesse a gestire la corrispondenza (art. 6.1.f GDPR).</li>
     ${sv.statistiche ? '<li><strong>Statistiche di utilizzo</strong>: consenso (art. 6.1.a GDPR e art. 122 Codice privacy).</li>' : ''}
@@ -50,6 +53,7 @@ export default {
   <p>I dati possono essere trattati, per conto del Titolare e nei limiti delle finalità indicate, da:</p>
   <ul>
     <li><strong>${esc(h.nome)}</strong>, fornitore di hosting del Sito, che agisce come responsabile del trattamento (art. 28 GDPR) – ${ext(h.privacy, 'informativa')};</li>
+    ${cfg._cfAnalytics && cfg.sito.hosting !== 'cloudflare' ? `<li><strong>Cloudflare, Inc.</strong> per le statistiche senza cookie, come responsabile del trattamento – ${ext('https://www.cloudflare.com/privacypolicy/', 'informativa')};</li>` : ''}
     <li>${/@(gmail|googlemail)\.com$/i.test(cfg.sito.emailContatto) ? `<strong>Google Ireland Ltd.</strong> (servizio Gmail), fornitore della posta elettronica del Titolare, per le e-mail ricevute – ${ext('https://policies.google.com/privacy?hl=it', 'informativa')}` : 'il fornitore del servizio di posta elettronica del Titolare, per le e-mail ricevute'};</li>
     ${sv.statistiche ? `<li><strong>Google Ireland Ltd.</strong> per Google Analytics, come responsabile del trattamento – ${ext('https://policies.google.com/privacy?hl=it', 'informativa')};</li>` : ''}
     ${sv.pubblicita ? `<li><strong>Google Ireland Ltd.</strong> per Google AdSense, che tratta i dati come autonomo titolare per l’erogazione e la personalizzazione degli annunci – ${ext('https://policies.google.com/technologies/partner-sites?hl=it', 'come Google usa i dati dei siti partner')};</li>` : ''}

@@ -224,3 +224,63 @@ export function onResize(fn) {
     t = setTimeout(fn, 120);
   });
 }
+
+/* ---------- Serie temporale (andamento dei prezzi) ---------- */
+/**
+ * @param {HTMLElement} el
+ * @param {{data:string}[]} punti     righe ordinate per data
+ * @param {{chiave:string, nome:string, slot:number}[]} serie
+ * @param {{decimali?:number, unita?:string}} opt
+ */
+export function serieTemporale(el, punti, serie, opt = {}) {
+  const dec = opt.decimali ?? 3;
+  const W = Math.max(280, Math.round(el.clientWidth || 560));
+  const H = 260;
+  const padL = 48, padR = 14, padT = 14, padB = 30;
+  const valori = punti.flatMap((p) => serie.map((s) => p[s.chiave])).filter((v) => typeof v === 'number');
+  if (punti.length < 2 || !valori.length) { el.innerHTML = ''; return; }
+  let lo = Math.min(...valori);
+  let hi = Math.max(...valori);
+  const margine = Math.max((hi - lo) * 0.15, 0.01);
+  lo -= margine; hi += margine;
+  const step = niceStep(hi - lo, 4);
+  lo = Math.floor(lo / step) * step;
+  hi = Math.ceil(hi / step) * step;
+  const X = (i) => padL + (i / (punti.length - 1)) * (W - padL - padR);
+  const Y = (v) => padT + (1 - (v - lo) / (hi - lo)) * (H - padT - padB);
+  const dataBreve = (iso) => { const [, m, g] = iso.split('-'); return `${Number(g)}/${Number(m)}`; };
+  let g = '';
+  for (let t = lo; t <= hi + 1e-9; t += step) {
+    g += `<line class="chart-grid" x1="${padL}" x2="${W - padR}" y1="${fmt(Y(t))}" y2="${fmt(Y(t))}"/>`;
+    g += `<text class="chart-axis" x="${padL - 6}" y="${fmt(Y(t) + 4)}" text-anchor="end">${num(t, 2)}</text>`;
+  }
+  const nEtichette = Math.min(punti.length, Math.max(2, Math.floor((W - padL - padR) / 70)));
+  for (let k = 0; k < nEtichette; k++) {
+    const i = Math.round((k / (nEtichette - 1)) * (punti.length - 1));
+    g += `<text class="chart-axis" x="${fmt(X(i))}" y="${H - 8}" text-anchor="${k === 0 ? 'start' : k === nEtichette - 1 ? 'end' : 'middle'}">${dataBreve(punti[i].data)}</text>`;
+  }
+  for (const s of serie) {
+    const pts = punti.map((p, i) => (typeof p[s.chiave] === 'number' ? `${fmt(X(i))},${fmt(Y(p[s.chiave]))}` : null)).filter(Boolean);
+    g += `<polyline points="${pts.join(' ')}" fill="none" stroke="var(--c${s.slot})" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>`;
+    const ult = punti[punti.length - 1][s.chiave];
+    if (typeof ult === 'number') g += `<circle cx="${fmt(X(punti.length - 1))}" cy="${fmt(Y(ult))}" r="4" fill="var(--c${s.slot})" class="chart-ring"/>`;
+  }
+  g += `<line class="hover-line chart-hover" x1="0" x2="0" y1="${padT}" y2="${H - padB}" opacity="0"/>`;
+  g += `<rect class="hover-capture" x="${padL}" y="${padT}" width="${W - padL - padR}" height="${H - padT - padB}" fill="transparent"/>`;
+  const legend = serie.map((s) => `<li><span class="sw s${s.slot}" aria-hidden="true"></span>${escHtml(s.nome)}</li>`).join('');
+  el.innerHTML = `<svg width="${W}" height="${H}" viewBox="0 0 ${W} ${H}" xmlns="${NS}" aria-hidden="true" focusable="false">${g}</svg><ul class="legend">${legend}</ul>`;
+
+  const svg = el.firstChild;
+  const hl = svg.querySelector('.hover-line');
+  svg.querySelector('.hover-capture').addEventListener('pointermove', (e) => {
+    const rect = svg.getBoundingClientRect();
+    const px = ((e.clientX - rect.left) / rect.width) * W;
+    const i = Math.max(0, Math.min(punti.length - 1, Math.round(((px - padL) / (W - padL - padR)) * (punti.length - 1))));
+    hl.setAttribute('x1', fmt(X(i)));
+    hl.setAttribute('x2', fmt(X(i)));
+    hl.setAttribute('opacity', '0.4');
+    const [a, m, gg] = punti[i].data.split('-');
+    showTip(`<strong>${gg}/${m}/${a}</strong><br>${serie.map((s) => `${escHtml(s.nome)}: ${typeof punti[i][s.chiave] === 'number' ? num(punti[i][s.chiave], dec) + ' ' + (opt.unita || '€') : 'n.d.'}`).join('<br>')}`, e.clientX, e.clientY);
+  });
+  svg.querySelector('.hover-capture').addEventListener('pointerleave', () => { hl.setAttribute('opacity', '0'); hideTip(); });
+}

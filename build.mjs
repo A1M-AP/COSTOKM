@@ -38,12 +38,17 @@ async function main() {
   const css = minifyCss(await readFile(join(ROOT, 'src/styles/style.css'), 'utf8'));
   const warnings = new Set();
   const c = createComponents(cfg, prezzi, warnings);
+  // Dati aggiornati ogni giorno dall'azione GitHub (facoltativi: la pagina dei prezzi gestisce la loro assenza)
+  c.storico = await readJson('public/data/storico-prezzi.json').catch(() => null);
+  c.regioni = await readJson('public/data/prezzi-regioni.json').catch(() => null);
 
   // Servizi non tecnici effettivamente attivi: decidono banner, categorie e testi delle policy.
   cfg._servizi = {
     statistiche: !!cfg.statistiche.ga4Id,
     pubblicita: !!(cfg.pubblicita.attiva && cfg.pubblicita.adsenseClient),
   };
+  // Statistiche senza cookie (Cloudflare Web Analytics): non richiedono consenso ma vanno indicate nella privacy policy.
+  cfg._cfAnalytics = !!(cfg.statistiche.cloudflareToken || cfg.statistiche.cloudflareAttivo);
   const runtimeConfig = {
     nome: cfg.sito.nome,
     url: siteUrl,

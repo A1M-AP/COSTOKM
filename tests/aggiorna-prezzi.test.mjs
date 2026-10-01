@@ -1,6 +1,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { parseCsv, dataEstrazione, impiantiAutostradali, calcolaMedie, applicaMedie } from '../scripts/aggiorna-prezzi.mjs';
+import { parseCsv, dataEstrazione, impiantiAutostradali, calcolaMedie, applicaMedie, regioneDiImpianto, riassuntoRegioni, aggiornaStorico, REGIONE_DI_PROVINCIA } from '../scripts/aggiorna-prezzi.mjs';
 
 // Dati di esempio nel formato dei CSV MIMIT (valori inventati solo per il test).
 const PREZZI_PIPE = `Estrazione del 2026-09-30
@@ -74,4 +74,23 @@ test('applica le medie, aggiorna date e segnala i prezzi manuali vecchi', () => 
 test('rifiuta dati anomali o insufficienti senza modificare nulla', () => {
   assert.throws(() => applicaMedie(base(), { ...medieOk, benzina: { media: 3.5, impianti: 18000 } }, { riferimento: 'x', oggi: 'x' }), /variazione anomala/);
   assert.throws(() => applicaMedie(base(), { ...medieOk, gpl: { media: 0.74, impianti: 12 } }, { riferimento: 'x', oggi: 'x' }), /insufficienti/);
+});
+
+test('medie regionali dalla provincia dell’impianto', () => {
+  const anag = parseCsv(ANAGRAFICA_PIPE);
+  const r = calcolaMedie(parseCsv(PREZZI_PIPE), impiantiAutostradali(anag), regioneDiImpianto(anag));
+  assert.deepEqual(Object.keys(r), ['Lazio', 'Lombardia', 'Piemonte']); // Sicilia: solo prezzi fuori scala, autostrade escluse
+  assert.equal(r.Lombardia.benzina.media, 2.1);
+  assert.equal(r.Piemonte.gpl.media, 0.74);
+  const rias = riassuntoRegioni(r, { riferimento: '2026-09-30', oggi: '2026-10-01' });
+  assert.equal(rias.regioni.Lombardia.benzina, null); // meno di 5 impianti → non mostrato
+  assert.equal(Object.keys(REGIONE_DI_PROVINCIA).length >= 107, true);
+});
+
+test('storico: aggiunge, sostituisce lo stesso giorno e ordina', () => {
+  const m = (b) => ({ benzina: { media: b }, diesel: { media: 2.3 }, gpl: { media: 0.7 }, metano: { media: 1.9 } });
+  let st = aggiornaStorico(null, '2026-09-30', m(2.11));
+  st = aggiornaStorico(st, '2026-10-01', m(2.10));
+  st = aggiornaStorico(st, '2026-09-30', m(2.12));
+  assert.deepEqual(st.serie.map((x) => [x.data, x.benzina]), [['2026-09-30', 2.12], ['2026-10-01', 2.1]]);
 });

@@ -198,3 +198,25 @@ export function costoViaggio(t) {
     persone,
   };
 }
+
+/**
+ * Rimborso chilometrico: km × tariffa (× 2 se andata e ritorno) × numero di trasferte,
+ * più pedaggi e parcheggi. Se indicato il costo reale al km, calcola la copertura.
+ */
+export function rimborsoChilometrico(t) {
+  const viaggi = Math.max(1, Math.round(pos(t.trasferte)) || 1);
+  const km = pos(t.km) * (t.andataRitorno ? 2 : 1) * viaggi;
+  const chilometrico = km * pos(t.tariffa);
+  const extra = pos(t.extra) * viaggi;
+  const costoReale = km * pos(t.costoReale);
+  return {
+    km,
+    viaggi,
+    chilometrico,
+    extra,
+    totale: chilometrico + extra,
+    costoReale: pos(t.costoReale) > 0 ? costoReale : null,
+    differenza: pos(t.costoReale) > 0 ? chilometrico - costoReale : null,
+    copertura: pos(t.costoReale) > 0 && costoReale > 0 ? chilometrico / costoReale : null,
+  };
+}

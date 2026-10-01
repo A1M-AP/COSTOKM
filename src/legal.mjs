@@ -9,7 +9,11 @@ export const legal = (h1, html, cfg) => `<div class="wrap">
 </article>
 </div>`;
 
-export const titolare = (cfg) => `${esc(cfg.sito.titolare)}, ${esc(cfg.sito.indirizzoTitolare)} – ${esc(cfg.sito.partitaIva)} – e-mail: <a href="mailto:${esc(cfg.sito.emailContatto)}">${esc(cfg.sito.emailContatto)}</a>`;
+export const titolare = (cfg) => {
+  const s = cfg.sito;
+  const parti = [esc(s.titolare), s.indirizzoTitolare && esc(s.indirizzoTitolare), s.partitaIva && `P.IVA / C.F. ${esc(s.partitaIva)}`].filter(Boolean);
+  return `${parti.join(' – ')} – e-mail: <a href="mailto:${esc(s.emailContatto)}">${esc(s.emailContatto)}</a>`;
+};
 
 /** Fornitori di hosting supportati (config: sito.hosting). */
 export const HOSTING = {

@@ -135,11 +135,15 @@ Privacy policy e cookie policy sono **generate dalla configurazione**: elencano 
 3. Le impostazioni sono già in `netlify.toml` (build `node build.mjs`, cartella `dist`, Node 20).
 4. *Domain management*: aggiungi `costokm.it` e segui le istruzioni DNS. HTTPS è automatico.
 
-### Cloudflare Pages
-1. *Workers & Pages → Create → Pages → Connect to Git* e scegli il repository.
-2. Framework preset: *None*; Build command: `node build.mjs`; Build output directory: `dist`.
-3. Variabile d'ambiente `NODE_VERSION` = `20` (se necessario).
-4. *Custom domains*: aggiungi `costokm.it`.
+### Cloudflare Workers (hosting attuale)
+La configurazione è in `wrangler.jsonc`: `npx wrangler deploy` esegue prima il build (`node build.mjs`) e poi pubblica la cartella `dist/` come sito statico (nessun codice server).
+1. *Workers & Pages → Create → Import a repository* e scegli il repository.
+2. Lascia **Build command** vuoto e **Deploy command** `npx wrangler deploy` (il build parte da solo grazie a `wrangler.jsonc`).
+3. Il nome del Worker nella dashboard deve coincidere con `"name"` in `wrangler.jsonc` (`costokm`): se l'hai chiamato diversamente, cambia uno dei due.
+4. *Settings → Domains & Routes*: aggiungi `costokm.it` (e `www.costokm.it` se vuoi).
+
+### Cloudflare Pages (alternativa)
+Framework preset *None*; Build command `node build.mjs`; Build output directory `dist`.
 
 Le intestazioni HTTP (sicurezza e cache) sono in `public/_headers`, valido per entrambe le piattaforme. Dopo la pubblicazione invia `https://costokm.it/sitemap.xml` a Google Search Console e Bing Webmaster Tools.
 
@@ -148,7 +152,7 @@ Le intestazioni HTTP (sicurezza e cache) sono in `public/_headers`, valido per e
 - [ ] URL di affiliazione in `config/site.config.json`
 - [ ] E-mail di contatto (`sito.emailContatto`) attiva
 - [ ] `pubblicita.mostraSegnaposto` a `false` se gli annunci non sono ancora attivi
-- [ ] Dati del titolare e `sito.hosting` in `config/site.config.json`
+- [ ] Indirizzo e P.IVA del titolare (`sito.indirizzoTitolare`, `sito.partitaIva`) in `config/site.config.json`
 - [ ] `npm test` e `npm run build` senza avvisi
 
 ## Formule usate

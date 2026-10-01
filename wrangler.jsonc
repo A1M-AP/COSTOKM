@@ -1,0 +1,16 @@
+// Configurazione Cloudflare Workers (sito statico, nessun codice server).
+// `wrangler deploy` esegue prima il build (node build.mjs) e poi pubblica la cartella dist/.
+// Il campo "name" deve coincidere con il nome del Worker nella dashboard Cloudflare.
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "costokm",
+  "compatibility_date": "2025-09-01",
+  "build": {
+    "command": "node build.mjs"
+  },
+  "assets": {
+    "directory": "./dist",
+    "html_handling": "auto-trailing-slash",
+    "not_found_handling": "404-page"
+  }
+}

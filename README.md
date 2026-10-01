@@ -3,7 +3,7 @@
 Sito statico, veloce e mobile-first che calcola il **costo reale di possesso di un'auto** al km, al mese e all'anno, confronta fino a 3 veicoli e trova il punto di pareggio tra auto elettrica e termica.
 
 - **Nessun backend**: tutti i calcoli avvengono nel browser.
-- **Nessuna dipendenza npm**: serve solo Node.js ≥ 18 (consigliato 20) per generare le pagine.
+- **Nessuna dipendenza npm**: serve solo Node.js ≥ 18 (consigliato 22) per generare le pagine.
 - **Prestazioni**: HTML pre-renderizzato con i risultati già calcolati, CSS inline, grafici SVG scritti a mano (nessuna libreria), CLS 0. Lighthouse mobile misurato in locale: Performance 99–100, Accessibilità 100, Best practice 100, SEO 100.
 
 ## Pagine
@@ -127,7 +127,7 @@ Privacy policy e cookie policy sono **generate dalla configurazione**: elencano 
 ### Netlify
 1. Carica il repository su GitHub/GitLab.
 2. Su Netlify: *Add new site → Import an existing project* e scegli il repository.
-3. Le impostazioni sono già in `netlify.toml` (build `node build.mjs`, cartella `dist`, Node 20).
+3. Le impostazioni sono già in `netlify.toml` (build `node build.mjs`, cartella `dist`, Node 22).
 4. *Domain management*: aggiungi `costokm.it` e segui le istruzioni DNS. HTTPS è automatico.
 
 ### Cloudflare Workers (hosting attuale)

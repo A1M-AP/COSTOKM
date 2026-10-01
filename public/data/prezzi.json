@@ -1,0 +1,15 @@
+{
+  "_istruzioni": "Aggiorna a mano i campi 'valore' (numero con il punto come separatore decimale, es. 1.789) e 'ultimo_aggiornamento' (AAAA-MM-GG). Lascia null finché non hai il dato ufficiale: il sito mostrerà l'avviso DA AGGIORNARE CON DATI UFFICIALI e chiederà all'utente di inserire il prezzo.",
+  "ultimo_aggiornamento": null,
+  "stato": "DA AGGIORNARE CON DATI UFFICIALI",
+  "fonte": "Ministero delle Imprese e del Made in Italy (MIMIT) – prezzi medi nazionali dei carburanti",
+  "fonte_url": "https://www.mimit.gov.it/it/prezzo-medio-carburanti",
+  "prezzi": {
+    "benzina": { "etichetta": "Benzina (self)", "unita": "€/l", "valore": null, "nota": "DA AGGIORNARE CON DATI UFFICIALI (MIMIT)" },
+    "diesel": { "etichetta": "Gasolio (self)", "unita": "€/l", "valore": null, "nota": "DA AGGIORNARE CON DATI UFFICIALI (MIMIT)" },
+    "gpl": { "etichetta": "GPL", "unita": "€/l", "valore": null, "nota": "DA AGGIORNARE CON DATI UFFICIALI (MIMIT)" },
+    "metano": { "etichetta": "Metano (CNG)", "unita": "€/kg", "valore": null, "nota": "DA AGGIORNARE CON DATI UFFICIALI (MIMIT)" },
+    "elettricita_casa": { "etichetta": "Energia elettrica domestica", "unita": "€/kWh", "valore": null, "nota": "DA AGGIORNARE CON DATI UFFICIALI (es. ARERA / bolletta, tutto incluso)" },
+    "elettricita_colonnina": { "etichetta": "Ricarica a colonnina pubblica", "unita": "€/kWh", "valore": null, "nota": "DA AGGIORNARE CON DATI UFFICIALI (tariffe medie degli operatori di ricarica)" }
+  }
+}

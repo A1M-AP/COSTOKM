@@ -57,17 +57,31 @@ tests/calc.test.mjs         ← test delle formule
 
 ## Aggiornare i prezzi di carburanti ed energia
 
-I prezzi medi **non sono inventati**: finché non li inserisci, `public/data/prezzi.json` contiene `null` e il sito mostra "DA AGGIORNARE CON DATI UFFICIALI", chiedendo all'utente di inserire il proprio prezzo.
+Valori attuali in `public/data/prezzi.json` (aggiornamento del 1° ottobre 2026):
+
+| Voce | Valore | Fonte e riferimento |
+|---|---|---|
+| Benzina self | 2,111 €/l | MIMIT, media nazionale rete stradale, 30/09/2026 |
+| Gasolio self | 2,316 €/l | MIMIT, media nazionale rete stradale, 30/09/2026 |
+| GPL servito | 0,742 €/l | Media nazionale su dati Osservaprezzi MIMIT, 30/09/2026 |
+| Metano servito | 1,891 €/kg | Media nazionale su dati Osservaprezzi MIMIT, 30/09/2026 |
+| Energia domestica | 0,4343 €/kWh | ARERA, cliente tipo vulnerabile in maggior tutela, IV trimestre 2026, tasse incluse |
+| Colonnine (AC) | 0,64 €/kWh | Osservatorio Adiconsum–TariffEV, agosto 2026 (DC 0,73, HPC 0,76) |
+
+Il MIMIT calcola le medie di benzina e gasolio sui prezzi *self* e quelle di GPL e metano sui prezzi *servito*. Per la ricarica pubblica non esiste una rilevazione ministeriale: si usa l'osservatorio indipendente più citato.
+
+Per aggiornarli:
 
 1. Apri `public/data/prezzi.json`.
-2. Per ogni voce inserisci il numero nel campo `valore`, con il **punto** come separatore decimale (es. `1.789`):
-   - `benzina`, `diesel`, `gpl` (€/l) e `metano` (€/kg): prezzi medi nazionali pubblicati dal **Ministero delle Imprese e del Made in Italy (MIMIT)** – <https://www.mimit.gov.it/it/prezzo-medio-carburanti>;
-   - `elettricita_casa` e `elettricita_colonnina` (€/kWh): il MIMIT non li pubblica; usa una fonte ufficiale o verificabile (es. dati ARERA per l'energia domestica, comprensivi di oneri e imposte; tariffe medie degli operatori di ricarica per le colonnine) e annotala nel campo `nota`.
-3. Imposta `ultimo_aggiornamento` nel formato `AAAA-MM-GG` (es. `"2026-10-01"`): la data viene mostrata accanto ai calcolatori.
-4. Puoi aggiornare `stato` (es. `"Aggiornato"`) e le note.
-5. Esegui `npm run build` (o fai push: Netlify/Cloudflare ricostruiscono da soli).
+2. Per ogni voce aggiorna `valore` (con il **punto** come separatore decimale, es. `1.789`), `riferimento` (data del dato) e, se cambia, `nota`/`fonte_url`:
+   - carburanti: <https://www.mimit.gov.it/it/prezzi-carburanti-media-nazionale> (aggiornamento giornaliero);
+   - energia domestica: comunicato trimestrale ARERA sulle condizioni di tutela (<https://www.arera.it>), prezzo per il cliente tipo tasse incluse;
+   - colonnine: tabelle mensili dell'Osservatorio prezzi Adiconsum–TariffEV (<https://adiconsum.it>).
+3. Imposta `ultimo_aggiornamento` (`AAAA-MM-GG`): è la data mostrata accanto ai calcolatori.
+4. Se un dato non è disponibile metti `null`: il sito mostra "DA AGGIORNARE CON DATI UFFICIALI" e chiede all'utente il prezzo.
+5. Esegui `npm run build` o fai push: Netlify/Cloudflare ricostruiscono da soli.
 
-Il file viene letto dal browser a runtime (`/data/prezzi.json`, mai in cache) **e** al build, per precompilare l'HTML senza spostamenti del layout. Per questo, dopo ogni modifica, ripubblica il sito.
+Il file viene letto dal browser (`/data/prezzi.json`, mai in cache) **e** al build, per precompilare l'HTML senza spostamenti del layout: dopo ogni modifica ripubblica il sito.
 
 ## Inserire i link di affiliazione
 
@@ -104,10 +118,14 @@ Inserisci l'ID GA4 in `statistiche.ga4Id`: lo script viene caricato solo dopo il
 
 ## Cookie e privacy
 
-- Banner con **Accetta** e **Rifiuta** di pari evidenza, **Personalizza** per categoria, la **X** equivale al rifiuto; nessuno script non tecnico prima del consenso.
+Privacy policy e cookie policy sono **generate dalla configurazione**: elencano solo i servizi realmente attivi (hosting, Google Analytics, Google AdSense) e si aggiornano da sole al build.
+
+- **Il banner cookie compare solo se è attivo almeno un servizio non tecnico** (`statistiche.ga4Id` valorizzato oppure `pubblicita.attiva` con `adsenseClient`). Con i soli strumenti tecnici il consenso non è dovuto (linee guida del Garante), quindi oggi il banner non viene mostrato e la cookie policy lo dichiara. Appena attivi annunci o statistiche, banner, link "Preferenze cookie" e policy compaiono automaticamente.
+- Banner con **Accetta** e **Rifiuta** di pari evidenza, **Personalizza** per categoria (solo quelle attive), la **X** equivale al rifiuto; nessuno script non tecnico prima del consenso.
+- `sito.hosting`: `"netlify"` o `"cloudflare"`, il fornitore indicato nella privacy policy (con Cloudflare viene citato anche l'eventuale cookie di sicurezza `__cf_bm`).
 - La scelta è salvata nel browser per `consensoCookie.durataMesi` (6 mesi); incrementa `consensoCookie.versione` quando aggiungi nuovi servizi, così il banner viene riproposto a tutti.
 - "Preferenze cookie" nel footer (e nella cookie policy) permette di modificare o revocare il consenso.
-- Completa i campi `sito.titolare`, `sito.indirizzoTitolare`, `sito.partitaIva`, `sito.emailContatto` e rivedi i testi segnati `[DA COMPLETARE]` in privacy e cookie policy (fornitore di hosting, servizi realmente attivi). È consigliata una verifica da parte di un professionista.
+- Completa i campi `sito.titolare`, `sito.indirizzoTitolare`, `sito.partitaIva`, `sito.emailContatto`: compaiono nelle policy e nelle note legali. È comunque consigliata una revisione finale da parte di un professionista.
 
 ## Pubblicare il sito
 
@@ -126,11 +144,11 @@ Inserisci l'ID GA4 in `statistiche.ga4Id`: lo script viene caricato solo dopo il
 Le intestazioni HTTP (sicurezza e cache) sono in `public/_headers`, valido per entrambe le piattaforme. Dopo la pubblicazione invia `https://costokm.it/sitemap.xml` a Google Search Console e Bing Webmaster Tools.
 
 ### Checklist prima di andare online
-- [ ] Prezzi e data aggiornati in `public/data/prezzi.json`
+- [x] Prezzi e data aggiornati in `public/data/prezzi.json` (1° ottobre 2026)
 - [ ] URL di affiliazione in `config/site.config.json`
-- [ ] Dati del titolare ed e-mail di contatto
+- [ ] E-mail di contatto (`sito.emailContatto`) attiva
 - [ ] `pubblicita.mostraSegnaposto` a `false` se gli annunci non sono ancora attivi
-- [ ] Testi di privacy e cookie policy rivisti
+- [ ] Dati del titolare e `sito.hosting` in `config/site.config.json`
 - [ ] `npm test` e `npm run build` senza avvisi
 
 ## Formule usate

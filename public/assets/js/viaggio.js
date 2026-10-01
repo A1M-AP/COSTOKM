@@ -78,8 +78,6 @@ const testo = () => {
   return `Costo del viaggio: ${v.carburante} di ${state.alimentazione === 'elettrica' ? 'energia' : 'carburante'}, ${v.totale} con pedaggi e parcheggio, ${v.perPersona} a persona.\n${v.dettaglio}\nCalcolo: ${url()}\nRisultati indicativi basati sui dati inseriti.`;
 };
 
-scriviForm();
-render();
 form.addEventListener('input', onInput);
 form.addEventListener('submit', (e) => e.preventDefault());
 bindActions(root, { testo, url, titolo: document.title });

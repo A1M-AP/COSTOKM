@@ -91,7 +91,7 @@ ${c.ad('dopo-calcolatore', 'wide')}
   <ul>
     <li><strong>Distanza</strong>: i km di sola andata indicati dal navigatore. Spunta “Andata e ritorno” per raddoppiarli: anche i pedaggi, inseriti per singola tratta, vengono raddoppiati.</li>
     <li><strong>Consumo medio</strong>: in litri ogni 100 km (kg per il metano, kWh per le elettriche). Usa il consumo reale: in autostrada a velocità sostenuta il consumo cresce sensibilmente.</li>
-    <li><strong>Prezzo</strong>: il prezzo medio viene proposto dal nostro file dei prezzi, da aggiornare con le rilevazioni ufficiali del Ministero delle Imprese e del Made in Italy (MIMIT); puoi sostituirlo con il prezzo del distributore dove farai rifornimento. Ricorda che lungo le autostrade i prezzi sono spesso più alti.</li>
+    <li><strong>Prezzo</strong>: viene proposto il prezzo medio nazionale rilevato dal Ministero delle Imprese e del Made in Italy (MIMIT), con la data di riferimento indicata sotto il modulo; puoi sostituirlo con il prezzo del distributore dove farai rifornimento. Ricorda che lungo le autostrade i prezzi sono spesso più alti.</li>
     <li><strong>Persone</strong>: il costo totale viene diviso in parti uguali tra chi condivide le spese.</li>
   </ul>
   ${c.ad('articolo')}

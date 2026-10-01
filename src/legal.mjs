@@ -10,3 +10,24 @@ export const legal = (h1, html, cfg) => `<div class="wrap">
 </div>`;
 
 export const titolare = (cfg) => `${esc(cfg.sito.titolare)}, ${esc(cfg.sito.indirizzoTitolare)} – ${esc(cfg.sito.partitaIva)} – e-mail: <a href="mailto:${esc(cfg.sito.emailContatto)}">${esc(cfg.sito.emailContatto)}</a>`;
+
+/** Fornitori di hosting supportati (config: sito.hosting). */
+export const HOSTING = {
+  netlify: {
+    nome: 'Netlify, Inc.',
+    sede: 'Stati Uniti',
+    privacy: 'https://www.netlify.com/privacy/',
+    cookie: null,
+  },
+  cloudflare: {
+    nome: 'Cloudflare, Inc.',
+    sede: 'Stati Uniti',
+    privacy: 'https://www.cloudflare.com/privacypolicy/',
+    cookie: { nome: '__cf_bm', durata: '30 minuti', finalita: 'Sicurezza: distingue il traffico legittimo dai bot (impostato solo se è attiva la protezione anti-bot)' },
+  },
+};
+
+export const hosting = (cfg) => HOSTING[cfg.sito.hosting] || HOSTING.netlify;
+
+/** Link esterno con indicazione per screen reader. */
+export const ext = (href, label) => `<a href="${esc(href)}" rel="noopener" target="_blank">${label}<span class="sr-only"> (sito esterno)</span></a>`;

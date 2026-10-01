@@ -63,6 +63,36 @@ function structuredData(page, cfg) {
   return graph.length ? jsonLd({ '@context': 'https://schema.org', '@graph': graph }) : '';
 }
 
+const haServizi = (cfg) => Object.values(cfg._servizi || {}).some(Boolean);
+
+/**
+ * Banner cookie (linee guida Garante 10/06/2021). Viene generato solo se è attivo
+ * almeno un servizio non tecnico: con i soli strumenti tecnici il banner non è dovuto.
+ */
+function cookieBanner(cfg) {
+  if (!haServizi(cfg)) return '';
+  const sv = cfg._servizi;
+  const cat = [sv.statistiche && '<strong>statistica</strong>', sv.pubblicita && '<strong>pubblicità</strong>'].filter(Boolean).join(' e ');
+  return `<div class="cookie-banner" id="cookie-banner" role="dialog" aria-modal="false" aria-labelledby="cookie-title" aria-describedby="cookie-desc" hidden>
+  <div class="cookie-inner">
+    <button type="button" class="cookie-close" data-consent="reject" aria-label="Chiudi e rifiuta i cookie non necessari">×</button>
+    <p class="cookie-title" id="cookie-title">Rispettiamo la tua privacy</p>
+    <p id="cookie-desc">Usiamo strumenti tecnici necessari e, solo con il tuo consenso, cookie di ${cat} di terze parti (Google). Chiudere con la X equivale a rifiutare. Puoi cambiare idea quando vuoi da “Preferenze cookie” in fondo alla pagina. <a href="/cookie-policy/">Cookie policy</a></p>
+    <div class="cookie-prefs" id="cookie-prefs" hidden>
+      <label class="check"><input type="checkbox" checked disabled> Tecnici (sempre attivi)</label>
+      ${sv.statistiche ? '<label class="check"><input type="checkbox" id="consent-statistiche"> Statistiche (Google Analytics)</label>' : ''}
+      ${sv.pubblicita ? '<label class="check"><input type="checkbox" id="consent-pubblicita"> Pubblicità (Google AdSense)</label>' : ''}
+    </div>
+    <div class="cookie-actions">
+      <button type="button" class="btn btn-consent" data-consent="reject">Rifiuta</button>
+      <button type="button" class="btn btn-consent" data-consent="accept">Accetta</button>
+      <button type="button" class="btn btn-ghost" data-consent="customize" aria-expanded="false" aria-controls="cookie-prefs">Personalizza</button>
+      <button type="button" class="btn btn-ghost" data-consent="save" hidden>Salva le scelte</button>
+    </div>
+  </div>
+</div>`;
+}
+
 export function layout({ page, body, css, cfg, runtimeConfig }) {
   const s = cfg.sito;
   const url = s.url + page.path;
@@ -132,30 +162,13 @@ ${body}
         <p class="small">I risultati sono indicativi e dipendono interamente dai dati inseriti dall’utente. Non costituiscono consulenza finanziaria, assicurativa o fiscale.</p>
       </div>
       <nav aria-label="Strumenti"><p class="footer-title">Strumenti</p><ul>${NAV.map((l) => `<li><a href="${l.href}">${l.label}</a></li>`).join('')}</ul></nav>
-      <nav aria-label="Informazioni"><p class="footer-title">Informazioni</p><ul>${footerLinks}<li><button type="button" class="linklike" data-cookie-settings>Preferenze cookie</button></li></ul></nav>
+      <nav aria-label="Informazioni"><p class="footer-title">Informazioni</p><ul>${footerLinks}${haServizi(cfg) ? '<li><button type="button" class="linklike" data-cookie-settings>Preferenze cookie</button></li>' : ''}</ul></nav>
     </div>
     <p class="small footer-aff">Alcuni link presenti sul sito sono link di affiliazione: se sottoscrivi un servizio tramite essi potremmo ricevere una commissione, senza costi aggiuntivi per te. ${esc(s.nome)} non svolge attività di intermediazione assicurativa né finanziaria.</p>
     <p class="small">© ${new Date().getFullYear()} ${esc(s.nome)}</p>
   </div>
 </footer>
-<div class="cookie-banner" id="cookie-banner" role="dialog" aria-modal="false" aria-labelledby="cookie-title" aria-describedby="cookie-desc" hidden>
-  <div class="cookie-inner">
-    <button type="button" class="cookie-close" data-consent="reject" aria-label="Chiudi e rifiuta i cookie non necessari">×</button>
-    <p class="cookie-title" id="cookie-title">Rispettiamo la tua privacy</p>
-    <p id="cookie-desc">Usiamo cookie tecnici necessari e, solo con il tuo consenso, cookie di <strong>statistica</strong> e <strong>pubblicità</strong> di terze parti. Chiudere con la X equivale a rifiutare. Puoi cambiare idea quando vuoi da “Preferenze cookie” in fondo alla pagina. <a href="/cookie-policy/">Cookie policy</a></p>
-    <div class="cookie-prefs" id="cookie-prefs" hidden>
-      <label class="check"><input type="checkbox" checked disabled> Tecnici (sempre attivi)</label>
-      <label class="check"><input type="checkbox" id="consent-statistiche"> Statistiche</label>
-      <label class="check"><input type="checkbox" id="consent-pubblicita"> Pubblicità</label>
-    </div>
-    <div class="cookie-actions">
-      <button type="button" class="btn btn-consent" data-consent="reject">Rifiuta</button>
-      <button type="button" class="btn btn-consent" data-consent="accept">Accetta</button>
-      <button type="button" class="btn btn-ghost" data-consent="customize" aria-expanded="false" aria-controls="cookie-prefs">Personalizza</button>
-      <button type="button" class="btn btn-ghost" data-consent="save" hidden>Salva le scelte</button>
-    </div>
-  </div>
-</div>
+${cookieBanner(cfg)}
 <script src="/assets/js/site.js" defer></script>
 ${scripts}
 </body>

@@ -1,44 +1,90 @@
-import { legal, titolare } from '../legal.mjs';
+import { legal, titolare, hosting, ext } from '../legal.mjs';
+import { esc } from '../util.mjs';
 
 export default {
   path: '/privacy-policy/',
   priority: 0.2,
   title: 'Privacy policy | costokm.it',
-  description: 'Informativa sul trattamento dei dati personali degli utenti di costokm.it ai sensi del Regolamento (UE) 2016/679 (GDPR).',
+  description: 'Informativa sul trattamento dei dati personali degli utenti di costokm.it ai sensi degli articoli 13 e 14 del Regolamento (UE) 2016/679 (GDPR).',
   h1: 'Privacy policy',
-  body: (c, cfg) => legal('Informativa sulla privacy', `
-  <p>Questa informativa descrive come vengono trattati i dati personali degli utenti che visitano ${cfg.sito.nome} (il “Sito”), ai sensi degli articoli 13 e 14 del Regolamento (UE) 2016/679 (“GDPR”) e del D.Lgs. 196/2003 come modificato dal D.Lgs. 101/2018.</p>
-  <p class="avviso">[DA COMPLETARE prima della pubblicazione: dati del titolare, servizi effettivamente attivati e loro fornitori. Si consiglia una verifica da parte di un professionista.]</p>
+  body: (c, cfg) => {
+    const h = hosting(cfg);
+    const sv = cfg._servizi || {};
+    const nome = esc(cfg.sito.nome);
+    const consenso = sv.statistiche || sv.pubblicita;
+    let n = 0;
+    const sez = (titolo) => `<h2>${++n}. ${titolo}</h2>`;
 
-  <h2>1. Titolare del trattamento</h2>
+    return legal('Informativa sulla privacy', `
+  <p>La presente informativa descrive come vengono trattati i dati personali di chi visita ${nome} (il “Sito”), ai sensi degli articoli 13 e 14 del Regolamento (UE) 2016/679 (“GDPR”) e del D.Lgs. 196/2003 (“Codice privacy”), come modificato dal D.Lgs. 101/2018. Il Sito è progettato per raccogliere il minor numero possibile di dati: <strong>i calcolatori funzionano interamente nel tuo browser</strong> e non richiedono registrazione.</p>
+
+  ${sez('Titolare del trattamento')}
   <p>${titolare(cfg)}</p>
 
-  <h2>2. Dati inseriti nei calcolatori</h2>
-  <p>I valori che inserisci nei calcolatori (km, prezzi, costi, ecc.) sono elaborati <strong>esclusivamente nel tuo browser</strong> e non vengono trasmessi né conservati dal Titolare. Se utilizzi la funzione “Condividi”, i valori vengono inseriti nell’indirizzo (URL) della pagina: chiunque riceva il link potrà vederli. Evita quindi di inserire informazioni personali nel campo “Nome del veicolo”.</p>
-
-  <h2>3. Dati di navigazione</h2>
-  <p>I sistemi informatici del fornitore di hosting acquisiscono, nel normale funzionamento, alcuni dati la cui trasmissione è implicita nell’uso dei protocolli di Internet (indirizzo IP, data e ora della richiesta, risorsa richiesta, user agent). Questi dati sono trattati sulla base del legittimo interesse del Titolare (art. 6.1.f GDPR) per garantire la sicurezza e il corretto funzionamento del Sito, e conservati per il tempo stabilito dal fornitore. Fornitore di hosting: <strong>[DA COMPLETARE: es. Netlify Inc. o Cloudflare Inc.]</strong>, che agisce come responsabile del trattamento; i dati possono essere trasferiti negli Stati Uniti sulla base del Data Privacy Framework UE-USA o delle clausole contrattuali standard.</p>
-
-  <h2>4. Preferenze sui cookie</h2>
-  <p>La tua scelta sui cookie viene memorizzata nel tuo browser (archivio locale) per ${cfg.consensoCookie.durataMesi} mesi, così da non riproporti il banner a ogni visita. Dettagli nella <a href="/cookie-policy/">cookie policy</a>.</p>
-
-  <h2>5. Statistiche e pubblicità (solo con consenso)</h2>
-  <p>Solo se presti il consenso tramite il banner, il Sito può utilizzare:</p>
+  ${sez('Quali dati trattiamo')}
+  <h3>a) Dati inseriti nei calcolatori</h3>
+  <p>I valori che inserisci (chilometri, prezzi, costi, nome del veicolo) sono elaborati <strong>esclusivamente sul tuo dispositivo</strong> e non vengono inviati né conservati dal Titolare. Se usi la funzione “Condividi”, i valori vengono inseriti nell’indirizzo (URL) della pagina: chiunque riceva il link potrà vederli e, aprendolo, l’indirizzo viene trasmesso al server come qualsiasi altra pagina. Ti consigliamo di non inserire informazioni personali nel campo “Nome del veicolo”.</p>
+  <h3>b) Dati di navigazione</h3>
+  <p>I sistemi del fornitore di hosting acquisiscono, nel normale funzionamento, alcuni dati la cui trasmissione è implicita nell’uso dei protocolli di Internet: indirizzo IP, data e ora della richiesta, pagina richiesta, codice di risposta, tipo di browser e sistema operativo, sito di provenienza. Questi dati non sono usati per identificarti e servono solo a garantire il funzionamento e la sicurezza del Sito.</p>
+  <h3>c) Dati che ci invii volontariamente</h3>
+  <p>Se ci scrivi via e-mail trattiamo il tuo indirizzo e il contenuto del messaggio per risponderti.</p>
+  ${consenso ? `<h3>d) Cookie e strumenti di terze parti, solo con il tuo consenso</h3>
+  <p>Solo se presti il consenso tramite il banner, il Sito utilizza:</p>
   <ul>
-    <li><strong>Statistiche</strong>: Google Analytics 4 (Google Ireland Ltd.) per misurare in forma aggregata l’uso del Sito. Base giuridica: consenso (art. 6.1.a GDPR).</li>
-    <li><strong>Pubblicità</strong>: Google AdSense (Google Ireland Ltd.) per mostrare annunci, anche personalizzati. Base giuridica: consenso (art. 6.1.a GDPR).</li>
+    ${sv.statistiche ? '<li><strong>Google Analytics 4</strong> (Google Ireland Ltd.) per statistiche aggregate sull’uso del Sito: pagine visitate, durata, dispositivo, area geografica approssimativa. Non usiamo funzioni di profilazione pubblicitaria di Analytics.</li>' : ''}
+    ${sv.pubblicita ? '<li><strong>Google AdSense</strong> (Google Ireland Ltd.) per mostrare annunci pubblicitari, anche personalizzati in base ai tuoi interessi, e misurarne l’efficacia.</li>' : ''}
   </ul>
-  <p>Questi fornitori possono trasferire dati verso paesi extra UE con le garanzie previste dagli artt. 44 e seguenti del GDPR. Puoi revocare il consenso in qualsiasi momento da “Preferenze cookie” in fondo a ogni pagina, senza pregiudicare la liceità del trattamento precedente.</p>
+  <p>La tua scelta sul consenso viene memorizzata nel tuo browser. Dettagli nella <a href="/cookie-policy/">cookie policy</a>.</p>` : `<h3>d) Cookie</h3>
+  <p>Il Sito non utilizza cookie di profilazione né strumenti di statistica o pubblicità di terze parti. Dettagli nella <a href="/cookie-policy/">cookie policy</a>.</p>`}
 
-  <h2>6. Link di affiliazione</h2>
-  <p>Alcuni link portano a siti di partner (ad esempio comparatori di assicurazioni o servizi di noleggio). Cliccando lasci il Sito: il trattamento dei dati che fornisci a quei servizi è regolato dalle loro informative. Il Titolare non riceve i dati che inserisci sui siti dei partner.</p>
+  ${sez('Finalità e basi giuridiche')}
+  <ul>
+    <li><strong>Erogazione e sicurezza del Sito</strong> (dati di navigazione): legittimo interesse del Titolare a fornire un servizio funzionante e sicuro (art. 6.1.f GDPR).</li>
+    <li><strong>Risposta alle richieste di contatto</strong>: esecuzione di misure richieste dall’interessato (art. 6.1.b GDPR) e legittimo interesse a gestire la corrispondenza (art. 6.1.f GDPR).</li>
+    ${sv.statistiche ? '<li><strong>Statistiche di utilizzo</strong>: consenso (art. 6.1.a GDPR e art. 122 Codice privacy).</li>' : ''}
+    ${sv.pubblicita ? '<li><strong>Pubblicità, anche personalizzata</strong>: consenso (art. 6.1.a GDPR e art. 122 Codice privacy).</li>' : ''}
+    <li><strong>Adempimenti di legge e tutela dei diritti</strong> del Titolare in sede giudiziaria, quando necessario (art. 6.1.c e 6.1.f GDPR).</li>
+  </ul>
 
-  <h2>7. Contatti via e-mail</h2>
-  <p>Se ci scrivi, tratteremo indirizzo e-mail e contenuto del messaggio solo per risponderti (base giuridica: misure su richiesta dell’interessato e legittimo interesse) e li conserveremo per il tempo necessario a gestire la richiesta e comunque non oltre 24 mesi.</p>
+  ${sez('Destinatari dei dati')}
+  <p>I dati possono essere trattati, per conto del Titolare e nei limiti delle finalità indicate, da:</p>
+  <ul>
+    <li><strong>${esc(h.nome)}</strong>, fornitore di hosting del Sito, che agisce come responsabile del trattamento (art. 28 GDPR) – ${ext(h.privacy, 'informativa')};</li>
+    <li>il fornitore del servizio di posta elettronica del Titolare, per le e-mail ricevute;</li>
+    ${sv.statistiche ? `<li><strong>Google Ireland Ltd.</strong> per Google Analytics, come responsabile del trattamento – ${ext('https://policies.google.com/privacy?hl=it', 'informativa')};</li>` : ''}
+    ${sv.pubblicita ? `<li><strong>Google Ireland Ltd.</strong> per Google AdSense, che tratta i dati come autonomo titolare per l’erogazione e la personalizzazione degli annunci – ${ext('https://policies.google.com/technologies/partner-sites?hl=it', 'come Google usa i dati dei siti partner')};</li>` : ''}
+  </ul>
+  <p>I dati non sono diffusi né venduti. Possono essere comunicati alle autorità competenti solo su loro legittima richiesta.</p>
 
-  <h2>8. Diritti dell’interessato</h2>
-  <p>Puoi esercitare in qualsiasi momento i diritti di accesso, rettifica, cancellazione, limitazione, portabilità e opposizione (artt. 15-22 GDPR) scrivendo all’indirizzo indicato sopra. Hai inoltre il diritto di proporre reclamo al Garante per la protezione dei dati personali (<a href="https://www.garanteprivacy.it" rel="noopener">www.garanteprivacy.it</a>).</p>
+  ${sez('Trasferimenti fuori dall’Unione europea')}
+  <p>${esc(h.nome)}${consenso ? ' e Google' : ''} possono trattare dati anche negli ${esc(h.sede)}. Il trasferimento avviene sulla base della decisione di adeguatezza della Commissione europea relativa al <em>EU-U.S. Data Privacy Framework</em>, per i fornitori certificati, oppure delle clausole contrattuali standard approvate dalla Commissione (art. 46 GDPR).</p>
 
-  <h2>9. Modifiche</h2>
-  <p>Questa informativa può essere aggiornata; la data dell’ultimo aggiornamento è indicata in alto.</p>`, cfg),
+  ${sez('Per quanto tempo conserviamo i dati')}
+  <ul>
+    <li>Dati di navigazione: per il tempo previsto dai sistemi del fornitore di hosting per finalità di sicurezza, di norma non oltre 30 giorni, salvo necessità di accertare reati.</li>
+    <li>E-mail: per il tempo necessario a gestire la richiesta e comunque non oltre 24 mesi dall’ultimo contatto.</li>
+    ${consenso ? `<li>Scelta sul consenso: ${cfg.consensoCookie.durataMesi} mesi, nel tuo browser.</li>` : ''}
+    ${sv.statistiche ? '<li>Dati di Google Analytics: 14 mesi.</li>' : ''}
+    ${sv.pubblicita ? '<li>Cookie pubblicitari: secondo le durate indicate nella cookie policy.</li>' : ''}
+  </ul>
+
+  ${sez('Obbligatorietà del conferimento')}
+  <p>Il conferimento dei dati di navigazione è necessario per accedere al Sito. L’invio di e-mail è facoltativo. ${consenso ? 'Il consenso a statistiche e pubblicità è facoltativo: rifiutarlo non limita in alcun modo l’uso dei calcolatori.' : ''}</p>
+
+  ${sez('I tuoi diritti')}
+  <p>In qualsiasi momento puoi chiedere al Titolare l’accesso ai tuoi dati, la rettifica, la cancellazione, la limitazione del trattamento, la portabilità e opporti ai trattamenti basati sul legittimo interesse (artt. 15-22 GDPR), scrivendo all’indirizzo indicato al punto 1. ${consenso ? 'Puoi revocare il consenso in qualsiasi momento da “Preferenze cookie” in fondo a ogni pagina, senza pregiudicare la liceità del trattamento svolto prima della revoca.' : ''}</p>
+  <p>Se ritieni che il trattamento violi il GDPR puoi proporre reclamo al Garante per la protezione dei dati personali (${ext('https://www.garanteprivacy.it', 'www.garanteprivacy.it')}).</p>
+
+  ${sez('Link a siti di terzi e affiliazioni')}
+  <p>Il Sito contiene link a siti esterni, compresi link di affiliazione verso partner commerciali. Cliccando lasci il Sito: il Titolare non riceve i dati che inserisci sui siti dei partner, il cui trattamento è regolato dalle rispettive informative.</p>
+
+  ${sez('Minori')}
+  <p>Il Sito non è rivolto a minori di 14 anni e non raccoglie consapevolmente i loro dati.</p>
+
+  ${sez('Processi decisionali automatizzati')}
+  <p>Non viene effettuato alcun processo decisionale automatizzato, compresa la profilazione, che produca effetti giuridici nei tuoi confronti. I risultati dei calcolatori sono stime elaborate sul tuo dispositivo e non vengono registrati.</p>
+
+  ${sez('Modifiche a questa informativa')}
+  <p>L’informativa può essere aggiornata, ad esempio se vengono attivati nuovi servizi. La data dell’ultimo aggiornamento è indicata in alto; in caso di nuovi servizi che richiedono il consenso, il banner ti verrà riproposto.</p>`, cfg);
+  },
 };

@@ -39,12 +39,18 @@ async function main() {
   const warnings = new Set();
   const c = createComponents(cfg, prezzi, warnings);
 
+  // Servizi non tecnici effettivamente attivi: decidono banner, categorie e testi delle policy.
+  cfg._servizi = {
+    statistiche: !!cfg.statistiche.ga4Id,
+    pubblicita: !!(cfg.pubblicita.attiva && cfg.pubblicita.adsenseClient),
+  };
   const runtimeConfig = {
     nome: cfg.sito.nome,
     url: siteUrl,
     consenso: cfg.consensoCookie,
     ads: { attiva: !!cfg.pubblicita.attiva, client: cfg.pubblicita.adsenseClient || '' },
     ga4Id: cfg.statistiche.ga4Id || '',
+    categorie: Object.keys(cfg._servizi).filter((k) => cfg._servizi[k]),
   };
   if (/DA COMPLETARE/.test(cfg.sito.titolare + cfg.sito.partitaIva + cfg.sito.indirizzoTitolare)) warnings.add('Dati del titolare (sito.titolare / indirizzoTitolare / partitaIva) da completare in config/site.config.json');
   if (cfg.pubblicita.attiva && !cfg.pubblicita.adsenseClient) warnings.add('Pubblicità attiva ma adsenseClient vuoto in config/site.config.json');

@@ -93,7 +93,11 @@ export function createComponents(cfg, prezzi, warnings) {
       ? `Prezzi medi aggiornati al <strong data-prezzi-data>${data}</strong>`
       : `Prezzi medi: <strong data-prezzi-data class="todo">DA AGGIORNARE CON DATI UFFICIALI</strong>`;
     if (!data) warnings.add('public/data/prezzi.json: prezzi non ancora aggiornati (ultimo_aggiornamento = null)');
-    return `<p class="prezzi-info" data-prezzi-info>${testo} · fonte: <a href="${esc(prezzi.fonte_url)}" rel="noopener" target="_blank">MIMIT<span class="sr-only"> (sito esterno)</span></a>. Puoi sempre inserire il prezzo che paghi tu.</p>`;
+    const link = (k, label) => {
+      const u = prezzi.prezzi?.[k]?.fonte_url || prezzi.fonte_url;
+      return `<a href="${esc(u)}" rel="noopener" target="_blank">${label}<span class="sr-only"> (sito esterno)</span></a>`;
+    };
+    return `<p class="prezzi-info" data-prezzi-info>${testo}. Fonti: ${link('benzina', 'MIMIT')} (carburanti), ${link('elettricita_casa', 'ARERA')} (energia domestica), ${link('elettricita_colonnina', 'Adiconsum–TariffEV')} (colonnine). Puoi sempre inserire il prezzo che paghi tu.</p>`;
   };
 
   c.disclaimer = () => `<p class="disclaimer"><strong>Risultati indicativi.</strong> I calcoli si basano esclusivamente sui dati che inserisci e su ipotesi semplificate; i valori predefiniti sono solo esempi. Non costituiscono consulenza finanziaria, assicurativa o fiscale. Nessun dato inserito viene inviato ai nostri server: tutti i calcoli avvengono nel tuo browser.</p>`;

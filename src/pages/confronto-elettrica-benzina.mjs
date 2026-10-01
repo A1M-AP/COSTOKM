@@ -143,7 +143,7 @@ ${c.ad('dopo-calcolatore', 'wide')}
   <ul>
     <li><strong>Prezzo d’acquisto e svalutazione</strong>: una differenza di prezzo elevata, o una svalutazione più rapida dell’elettrica, alza la soglia di convenienza. Inserisci il prezzo al netto degli incentivi effettivamente ottenuti.</li>
     <li><strong>Dove ricarichi</strong>: la ricarica domestica costa in genere molto meno di quella alle colonnine pubbliche, soprattutto quelle veloci. Chi può ricaricare a casa raggiunge il pareggio con molti meno chilometri.</li>
-    <li><strong>Prezzo del carburante</strong>: i prezzi medi indicati vanno aggiornati con le rilevazioni ufficiali del MIMIT; puoi sempre sostituirli con il prezzo che paghi tu.</li>
+    <li><strong>Prezzo del carburante</strong>: i prezzi proposti sono le medie nazionali rilevate dal MIMIT per i carburanti, da ARERA per l’energia domestica e dall’Osservatorio Adiconsum–TariffEV per le colonnine; puoi sempre sostituirli con il prezzo che paghi tu.</li>
     <li><strong>Bollo e assicurazione</strong>: il bollo dipende dalla regione, l’assicurazione dal profilo del guidatore e dal valore dell’auto. Usa i tuoi preventivi.</li>
   </ul>
   ${c.ad('articolo')}

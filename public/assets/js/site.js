@@ -63,8 +63,8 @@
   function mostraBanner(conPreferenze) {
     if (!banner) return;
     var c = leggiConsenso();
-    chkStat.checked = !!(c && c.statistiche);
-    chkPub.checked = !!(c && c.pubblicita);
+    if (chkStat) chkStat.checked = !!(c && c.statistiche);
+    if (chkPub) chkPub.checked = !!(c && c.pubblicita);
     mostraPreferenze(!!conPreferenze);
     banner.hidden = false;
   }
@@ -87,8 +87,8 @@
       var azione = b.getAttribute('data-consent');
       if (azione === 'accept') salvaConsenso(true, true);
       else if (azione === 'reject') salvaConsenso(false, false);
-      else if (azione === 'customize') { mostraPreferenze(true); chkStat.focus(); }
-      else if (azione === 'save') salvaConsenso(chkStat.checked, chkPub.checked);
+      else if (azione === 'customize') { mostraPreferenze(true); (chkStat || chkPub).focus(); }
+      else if (azione === 'save') salvaConsenso(!!(chkStat && chkStat.checked), !!(chkPub && chkPub.checked));
     });
     banner.addEventListener('keydown', function (e) {
       if (e.key === 'Escape' && lastFocus) nascondiBanner(); // solo se aperto dal footer
@@ -97,9 +97,10 @@
 
   document.querySelectorAll('[data-cookie-settings]').forEach(function (b) {
     b.addEventListener('click', function () {
+      if (!banner) return;
       lastFocus = b;
       mostraBanner(true);
-      var first = banner.querySelector('#consent-statistiche');
+      var first = chkStat || chkPub;
       if (first) first.focus();
     });
   });
@@ -146,6 +147,8 @@
     }
   }
 
+  // Nessun servizio non tecnico configurato: niente banner e niente script di terze parti.
+  if (!banner || !(cfg.categorie && cfg.categorie.length)) return;
   var consenso = leggiConsenso();
   if (consenso) applica(consenso);
   else mostraBanner(false);

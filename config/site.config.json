@@ -1,6 +1,5 @@
 {
   "_istruzioni": "Unico file di configurazione del sito. Dopo ogni modifica esegui `npm run build` (su Netlify/Cloudflare il build parte da solo a ogni push). Vedi README.md.",
-
   "sito": {
     "nome": "costokm.it",
     "url": "https://costokm.it",
@@ -10,9 +9,10 @@
     "titolare": "[DA COMPLETARE: nome e cognome o ragione sociale]",
     "indirizzoTitolare": "[DA COMPLETARE: indirizzo]",
     "partitaIva": "[DA COMPLETARE: P.IVA / C.F.]",
-    "ultimoAggiornamentoDocumentiLegali": "2026-10-01"
+    "hosting": "netlify",
+    "ultimoAggiornamentoDocumentiLegali": "2026-10-01",
+    "_notaHosting": "Fornitore di hosting indicato nella privacy policy: 'netlify' oppure 'cloudflare'."
   },
-
   "affiliazioni": {
     "disclosure": "Link affiliato: se acquisti o sottoscrivi un servizio tramite questo link potremmo ricevere una commissione, senza alcun costo aggiuntivo per te. costokm.it non fornisce consulenza né svolge attività di intermediazione assicurativa o finanziaria: il link rimanda a un servizio esterno.",
     "assicurazione": {
@@ -32,7 +32,6 @@
       "partner": "[Nome servizio di noleggio]"
     }
   },
-
   "pubblicita": {
     "_nota": "mostraSegnaposto: true mostra i riquadri vuoti 'Spazio pubblicitario' (utile in sviluppo). In produzione, senza annunci attivi, impostalo a false: lo spazio resta comunque riservato solo se gli annunci sono attivi.",
     "attiva": false,
@@ -44,12 +43,10 @@
       "laterale": ""
     }
   },
-
   "statistiche": {
     "_nota": "Facoltativo. Inserisci l'ID di misurazione GA4 (G-XXXXXXX). Lo script viene caricato solo dopo il consenso alla categoria Statistiche.",
     "ga4Id": ""
   },
-
   "consensoCookie": {
     "_nota": "Incrementa 'versione' quando aggiungi nuovi servizi di terze parti: il banner verrà mostrato di nuovo a tutti. 'durataMesi' = dopo quanto il banner viene riproposto (il Garante indica di non riproporlo prima di 6 mesi).",
     "versione": 1,

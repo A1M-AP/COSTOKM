@@ -111,8 +111,6 @@ function testo() {
   return `${tp.titolo}.\n${r.nomeT}: ${euro(r.rt.totaleAnnuo)}/anno (${euro(r.rt.perKm, 3)}/km)\nAuto elettrica: ${euro(r.re.totaleAnnuo)}/anno (${euro(r.re.perKm, 3)}/km)\nCon ${num(state.km)} km/anno per ${anniLabel(state.anni)}.\nCalcolo: ${url()}\nRisultati indicativi basati sui dati inseriti.`;
 }
 
-scriviForm();
-render();
 form.addEventListener('input', onInput);
 form.addEventListener('submit', (e) => e.preventDefault());
 bindActions(root, { testo, url, titolo: document.title });

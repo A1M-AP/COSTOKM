@@ -317,8 +317,6 @@ function preparaStampa() {
 /* ---------- Avvio ---------- */
 leggiUrl();
 renderTabs();
-scriviForm();
-render();
 form.addEventListener('input', onInput);
 form.addEventListener('submit', (e) => e.preventDefault());
 bindActions(root, { testo: testoRisultato, url: urlCondivisione, titolo: document.title, beforePrint: preparaStampa });

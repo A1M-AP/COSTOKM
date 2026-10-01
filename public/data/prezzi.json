@@ -1,15 +1,57 @@
 {
-  "_istruzioni": "Aggiorna a mano i campi 'valore' (numero con il punto come separatore decimale, es. 1.789) e 'ultimo_aggiornamento' (AAAA-MM-GG). Lascia null finché non hai il dato ufficiale: il sito mostrerà l'avviso DA AGGIORNARE CON DATI UFFICIALI e chiederà all'utente di inserire il prezzo.",
-  "ultimo_aggiornamento": null,
-  "stato": "DA AGGIORNARE CON DATI UFFICIALI",
-  "fonte": "Ministero delle Imprese e del Made in Italy (MIMIT) – prezzi medi nazionali dei carburanti",
-  "fonte_url": "https://www.mimit.gov.it/it/prezzo-medio-carburanti",
+  "_istruzioni": "Aggiorna a mano i campi 'valore' (numero con il punto come separatore decimale, es. 1.789), 'riferimento' e 'ultimo_aggiornamento' (AAAA-MM-GG). Se un dato ufficiale non è disponibile metti null: il sito mostrerà l'avviso DA AGGIORNARE CON DATI UFFICIALI e chiederà all'utente di inserire il prezzo. Dopo la modifica ripubblica il sito.",
+  "ultimo_aggiornamento": "2026-10-01",
+  "stato": "Aggiornato",
+  "fonte": "Ministero delle Imprese e del Made in Italy (MIMIT) – prezzi medi nazionali dei carburanti; ARERA per l'energia domestica; Osservatorio Adiconsum–TariffEV per la ricarica pubblica",
+  "fonte_url": "https://www.mimit.gov.it/it/prezzi-carburanti-media-nazionale",
   "prezzi": {
-    "benzina": { "etichetta": "Benzina (self)", "unita": "€/l", "valore": null, "nota": "DA AGGIORNARE CON DATI UFFICIALI (MIMIT)" },
-    "diesel": { "etichetta": "Gasolio (self)", "unita": "€/l", "valore": null, "nota": "DA AGGIORNARE CON DATI UFFICIALI (MIMIT)" },
-    "gpl": { "etichetta": "GPL", "unita": "€/l", "valore": null, "nota": "DA AGGIORNARE CON DATI UFFICIALI (MIMIT)" },
-    "metano": { "etichetta": "Metano (CNG)", "unita": "€/kg", "valore": null, "nota": "DA AGGIORNARE CON DATI UFFICIALI (MIMIT)" },
-    "elettricita_casa": { "etichetta": "Energia elettrica domestica", "unita": "€/kWh", "valore": null, "nota": "DA AGGIORNARE CON DATI UFFICIALI (es. ARERA / bolletta, tutto incluso)" },
-    "elettricita_colonnina": { "etichetta": "Ricarica a colonnina pubblica", "unita": "€/kWh", "valore": null, "nota": "DA AGGIORNARE CON DATI UFFICIALI (tariffe medie degli operatori di ricarica)" }
+    "benzina": {
+      "etichetta": "Benzina (self)",
+      "unita": "€/l",
+      "valore": 2.111,
+      "riferimento": "2026-09-30",
+      "nota": "MIMIT, prezzo medio nazionale self service, rete stradale, rilevazione del 30/09/2026",
+      "fonte_url": "https://www.mimit.gov.it/it/prezzi-carburanti-media-nazionale"
+    },
+    "diesel": {
+      "etichetta": "Gasolio (self)",
+      "unita": "€/l",
+      "valore": 2.316,
+      "riferimento": "2026-09-30",
+      "nota": "MIMIT, prezzo medio nazionale self service, rete stradale, rilevazione del 30/09/2026",
+      "fonte_url": "https://www.mimit.gov.it/it/prezzi-carburanti-media-nazionale"
+    },
+    "gpl": {
+      "etichetta": "GPL (servito)",
+      "unita": "€/l",
+      "valore": 0.742,
+      "riferimento": "2026-09-30",
+      "nota": "Media nazionale modalità servito su dati Osservaprezzi MIMIT, 30/09/2026 (il MIMIT calcola le medie di GPL e metano sui prezzi 'servito')",
+      "fonte_url": "https://www.mimit.gov.it/it/prezzi-carburanti-media-nazionale"
+    },
+    "metano": {
+      "etichetta": "Metano (servito)",
+      "unita": "€/kg",
+      "valore": 1.891,
+      "riferimento": "2026-09-30",
+      "nota": "Media nazionale modalità servito su dati Osservaprezzi MIMIT, 30/09/2026",
+      "fonte_url": "https://www.mimit.gov.it/it/prezzi-carburanti-media-nazionale"
+    },
+    "elettricita_casa": {
+      "etichetta": "Energia elettrica domestica",
+      "unita": "€/kWh",
+      "valore": 0.4343,
+      "riferimento": "2026-10-01",
+      "nota": "ARERA, prezzo di riferimento per il cliente domestico tipo vulnerabile in maggior tutela, IV trimestre 2026, tasse incluse (43,43 c€/kWh)",
+      "fonte_url": "https://www.arera.it/comunicati-stampa/dettaglio/elettricita-maggior-tutela-373-nel-iv-trimestre-2026-per-i-clienti-vulnerabili"
+    },
+    "elettricita_colonnina": {
+      "etichetta": "Ricarica a colonnina pubblica (AC)",
+      "unita": "€/kWh",
+      "valore": 0.64,
+      "riferimento": "2026-08-31",
+      "nota": "Osservatorio Adiconsum–TariffEV, media della rete pubblica ad agosto 2026 in corrente alternata (AC); DC 0,73 €/kWh, HPC 0,76 €/kWh. Non esiste una rilevazione ministeriale dei prezzi di ricarica.",
+      "fonte_url": "https://adiconsum.it/mobilita-elettrica-tabelle-di-agosto-2026-dellosservatorio-prezzi-delle-tariffe-di-ricarica/"
+    }
   }
 }

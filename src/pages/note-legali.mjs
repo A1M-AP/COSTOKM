@@ -20,7 +20,7 @@ export default {
   <p>Il sito si finanzia con spazi pubblicitari e link di affiliazione. Se sottoscrivi un servizio tramite un link affiliato potremmo ricevere una commissione, senza costi aggiuntivi per te. I link affiliati sono identificati dall’etichetta “Link affiliato” e dall’attributo <code>rel="sponsored"</code>. Le commissioni non influenzano i risultati dei calcoli.</p>
 
   <h2>Fonti dei dati</h2>
-  <p>I prezzi medi di carburanti ed energia sono aggiornati manualmente a partire dalle rilevazioni ufficiali (per i carburanti, il Ministero delle Imprese e del Made in Italy – MIMIT). La data dell’ultimo aggiornamento è indicata accanto ai calcolatori. Nonostante la cura posta, i dati potrebbero non essere aggiornati: verifica sempre i prezzi che paghi.</p>
+  <p>I prezzi medi proposti nei calcolatori sono aggiornati manualmente a partire da: rilevazioni del Ministero delle Imprese e del Made in Italy (MIMIT) per i carburanti; prezzo di riferimento ARERA per l’energia elettrica domestica; Osservatorio Adiconsum–TariffEV per la ricarica alle colonnine pubbliche, per cui non esiste una rilevazione ministeriale. La data dell’ultimo aggiornamento e le fonti sono indicate accanto ai calcolatori. Nonostante la cura posta, i dati potrebbero non essere aggiornati: verifica sempre i prezzi che paghi.</p>
 
   <h2>Limitazione di responsabilità</h2>
   <p>Nei limiti consentiti dalla legge, il gestore non risponde di decisioni prese sulla base dei risultati dei calcolatori, di eventuali errori o omissioni nei contenuti, né dei contenuti e servizi di siti terzi raggiungibili tramite link.</p>

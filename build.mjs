@@ -52,10 +52,7 @@ async function main() {
     ga4Id: cfg.statistiche.ga4Id || '',
     categorie: Object.keys(cfg._servizi).filter((k) => cfg._servizi[k]),
   };
-  for (const k of ['titolare', 'indirizzoTitolare', 'partitaIva']) {
-    const v = cfg.sito[k];
-    if (!v || /DA COMPLETARE/.test(v)) warnings.add(`Dato del titolare mancante: sito.${k} in config/site.config.json`);
-  }
+  if (!cfg.sito.titolare || /DA COMPLETARE/.test(cfg.sito.titolare)) warnings.add('Titolare del sito mancante: sito.titolare in config/site.config.json');
   if (cfg.pubblicita.attiva && !cfg.pubblicita.adsenseClient) warnings.add('Pubblicità attiva ma adsenseClient vuoto in config/site.config.json');
 
   await rm(DIST, { recursive: true, force: true });

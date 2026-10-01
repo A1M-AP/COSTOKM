@@ -15,7 +15,7 @@ export default {
   <ul>
     <li><strong>Trasparenza</strong>: le formule usate sono spiegate in ogni pagina, così puoi verificare ogni risultato.</li>
     <li><strong>Privacy</strong>: i calcoli avvengono nel tuo browser. I dati che inserisci non vengono inviati ai nostri server.</li>
-    <li><strong>Dati verificabili</strong>: i prezzi medi di carburanti ed energia sono aggiornati manualmente a partire dalle rilevazioni ufficiali, con la data di aggiornamento sempre indicata. Puoi comunque inserire i tuoi prezzi.</li>
+    <li><strong>Dati verificabili</strong>: i prezzi medi dei carburanti sono calcolati ogni giorno dai dati aperti del Ministero delle Imprese e del Made in Italy; quelli dell’energia vengono da ARERA e dall’Osservatorio Adiconsum–TariffEV. La data di aggiornamento è sempre indicata. Puoi comunque inserire i tuoi prezzi.</li>
     <li><strong>Indipendenza</strong>: il sito si sostiene con pubblicità e link di affiliazione, sempre segnalati come tali. Le eventuali commissioni non influenzano i calcoli.</li>
   </ul>
   <h2>Cosa non facciamo</h2>

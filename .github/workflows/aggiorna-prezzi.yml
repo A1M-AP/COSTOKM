@@ -1,0 +1,47 @@
+# Aggiorna ogni giorno i prezzi medi dei carburanti dai dati aperti del MIMIT.
+# Se i prezzi cambiano, fa un commit su main: Cloudflare ripubblica il sito da solo.
+# Si può avviare anche a mano: Actions → "Aggiorna prezzi carburanti" → Run workflow.
+name: Aggiorna prezzi carburanti
+
+on:
+  schedule:
+    - cron: "17 9 * * *" # ogni giorno alle 9:17 UTC (dopo la pubblicazione dei dati del mattino)
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: aggiorna-prezzi
+  cancel-in-progress: false
+
+jobs:
+  aggiorna:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Scarica i dati MIMIT e calcola le medie
+        run: node scripts/aggiorna-prezzi.mjs
+
+      - name: Verifica (test e build)
+        run: |
+          npm test
+          node build.mjs
+
+      - name: Salva e pubblica
+        run: |
+          if git diff --quiet -- public/data/prezzi.json; then
+            echo "Nessuna modifica ai prezzi."
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add public/data/prezzi.json
+          git commit -m "Prezzi carburanti aggiornati (MIMIT, $(date -u +%Y-%m-%d))"
+          git push

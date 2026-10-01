@@ -55,33 +55,28 @@ scripts/genera-immagini.cjs ← rigenera og-image.png e apple-touch-icon.png (ri
 tests/calc.test.mjs         ← test delle formule
 ```
 
-## Aggiornare i prezzi di carburanti ed energia
+## Prezzi di carburanti ed energia
 
-Valori attuali in `public/data/prezzi.json` (aggiornamento del 1° ottobre 2026):
+### Carburanti: aggiornamento automatico ogni giorno
+L'azione GitHub `.github/workflows/aggiorna-prezzi.yml` parte ogni giorno alle 9:17 UTC (e a mano da *Actions → Aggiorna prezzi carburanti → Run workflow*):
 
-| Voce | Valore | Fonte e riferimento |
-|---|---|---|
-| Benzina self | 2,111 €/l | MIMIT, media nazionale rete stradale, 30/09/2026 |
-| Gasolio self | 2,316 €/l | MIMIT, media nazionale rete stradale, 30/09/2026 |
-| GPL servito | 0,742 €/l | Media nazionale su dati Osservaprezzi MIMIT, 30/09/2026 |
-| Metano servito | 1,891 €/kg | Media nazionale su dati Osservaprezzi MIMIT, 30/09/2026 |
-| Energia domestica | 0,4343 €/kWh | ARERA, cliente tipo vulnerabile in maggior tutela, IV trimestre 2026, tasse incluse |
-| Colonnine (AC) | 0,64 €/kWh | Osservatorio Adiconsum–TariffEV, agosto 2026 (DC 0,73, HPC 0,76) |
+1. scarica i dati aperti del MIMIT (`prezzo_alle_8.csv` e `anagrafica_impianti_attivi.csv`, [dataset](https://www.mimit.gov.it/it/open-data/elenco-dataset/carburanti-prezzi-praticati-e-anagrafica-degli-impianti));
+2. con `scripts/aggiorna-prezzi.mjs` calcola la media nazionale della rete stradale (benzina e gasolio *self*, GPL e metano *servito*, come le medie ufficiali MIMIT), escludendo autostrade e valori fuori scala;
+3. esegue test e build, poi fa un commit di `public/data/prezzi.json` su `main`: Cloudflare ripubblica il sito da solo.
 
-Il MIMIT calcola le medie di benzina e gasolio sui prezzi *self* e quelle di GPL e metano sui prezzi *servito*. Per la ricarica pubblica non esiste una rilevazione ministeriale: si usa l'osservatorio indipendente più citato.
+Protezioni: se i dati mancano, sono troppo pochi o cambiano più del 25% rispetto al giorno prima, l'aggiornamento si ferma senza toccare il file (il sito continua a mostrare gli ultimi valori validi con la loro data) e GitHub ti avvisa via e-mail del fallimento.
 
-Per aggiornarli:
+Prova locale senza scrivere: `node scripts/aggiorna-prezzi.mjs --dry-run`.
 
-1. Apri `public/data/prezzi.json`.
-2. Per ogni voce aggiorna `valore` (con il **punto** come separatore decimale, es. `1.789`), `riferimento` (data del dato) e, se cambia, `nota`/`fonte_url`:
-   - carburanti: <https://www.mimit.gov.it/it/prezzi-carburanti-media-nazionale> (aggiornamento giornaliero);
-   - energia domestica: comunicato trimestrale ARERA sulle condizioni di tutela (<https://www.arera.it>), prezzo per il cliente tipo tasse incluse;
-   - colonnine: tabelle mensili dell'Osservatorio prezzi Adiconsum–TariffEV (<https://adiconsum.it>).
-3. Imposta `ultimo_aggiornamento` (`AAAA-MM-GG`): è la data mostrata accanto ai calcolatori.
-4. Se un dato non è disponibile metti `null`: il sito mostra "DA AGGIORNARE CON DATI UFFICIALI" e chiede all'utente il prezzo.
-5. Esegui `npm run build` o fai push: Netlify/Cloudflare ricostruiscono da soli.
+### Energia elettrica: aggiornamento manuale
+Per energia domestica e colonnine non esistono dati aperti scaricabili; lo script segnala nel log quando sono vecchi.
 
-Il file viene letto dal browser (`/data/prezzi.json`, mai in cache) **e** al build, per precompilare l'HTML senza spostamenti del layout: dopo ogni modifica ripubblica il sito.
+| Voce | Valore attuale | Fonte | Frequenza |
+|---|---|---|---|
+| Energia domestica | 0,4343 €/kWh | ARERA, cliente tipo vulnerabile in maggior tutela, tasse incluse | trimestrale (1° gen/apr/lug/ott) |
+| Colonnine (AC) | 0,64 €/kWh | Osservatorio Adiconsum–TariffEV | mensile |
+
+In `public/data/prezzi.json` aggiorna `valore` (punto come separatore decimale), `riferimento` (data del dato) e `nota`. Valore `null` = il sito mostra "DA AGGIORNARE CON DATI UFFICIALI" e chiede il prezzo all'utente.
 
 ## Inserire i link di affiliazione
 
@@ -148,11 +143,10 @@ Framework preset *None*; Build command `node build.mjs`; Build output directory 
 Le intestazioni HTTP (sicurezza e cache) sono in `public/_headers`, valido per entrambe le piattaforme. Dopo la pubblicazione invia `https://costokm.it/sitemap.xml` a Google Search Console e Bing Webmaster Tools.
 
 ### Checklist prima di andare online
-- [x] Prezzi e data aggiornati in `public/data/prezzi.json` (1° ottobre 2026)
+- [x] Prezzi carburanti automatici; energia aggiornata al IV trimestre 2026
 - [ ] URL di affiliazione in `config/site.config.json`
-- [ ] E-mail di contatto (`sito.emailContatto`) attiva
 - [ ] `pubblicita.mostraSegnaposto` a `false` se gli annunci non sono ancora attivi
-- [ ] Indirizzo e P.IVA del titolare (`sito.indirizzoTitolare`, `sito.partitaIva`) in `config/site.config.json`
+- [ ] P.IVA e indirizzo solo se esistono (campi facoltativi `sito.partitaIva`, `sito.indirizzoTitolare`)
 - [ ] `npm test` e `npm run build` senza avvisi
 
 ## Formule usate

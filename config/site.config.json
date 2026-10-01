@@ -5,13 +5,13 @@
     "url": "https://costokm.it",
     "lingua": "it",
     "descrizioneBreve": "Calcola quanto ti costa davvero la tua auto: al km, al mese e all'anno.",
-    "emailContatto": "info@costokm.it",
+    "emailContatto": "petrescumihaiantonio@gmail.com",
     "titolare": "MAP Technologies",
     "indirizzoTitolare": "",
     "partitaIva": "",
     "hosting": "cloudflare",
     "ultimoAggiornamentoDocumentiLegali": "2026-10-01",
-    "_notaHosting": "Fornitore di hosting indicato nella privacy policy: 'cloudflare' oppure 'netlify'. indirizzoTitolare e partitaIva: se vuoti non vengono mostrati (il build lo segnala)."
+    "_notaHosting": "Fornitore di hosting indicato nella privacy policy: 'cloudflare' oppure 'netlify'. indirizzoTitolare e partitaIva sono facoltativi: se vuoti non vengono mostrati (la P.IVA va indicata solo se il titolare ne ha una)."
   },
   "affiliazioni": {
     "disclosure": "Link affiliato: se acquisti o sottoscrivi un servizio tramite questo link potremmo ricevere una commissione, senza alcun costo aggiuntivo per te. costokm.it non fornisce consulenza né svolge attività di intermediazione assicurativa o finanziaria: il link rimanda a un servizio esterno.",

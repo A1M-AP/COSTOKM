@@ -50,14 +50,14 @@ export default {
   <p>I dati possono essere trattati, per conto del Titolare e nei limiti delle finalità indicate, da:</p>
   <ul>
     <li><strong>${esc(h.nome)}</strong>, fornitore di hosting del Sito, che agisce come responsabile del trattamento (art. 28 GDPR) – ${ext(h.privacy, 'informativa')};</li>
-    <li>il fornitore del servizio di posta elettronica del Titolare, per le e-mail ricevute;</li>
+    <li>${/@(gmail|googlemail)\.com$/i.test(cfg.sito.emailContatto) ? `<strong>Google Ireland Ltd.</strong> (servizio Gmail), fornitore della posta elettronica del Titolare, per le e-mail ricevute – ${ext('https://policies.google.com/privacy?hl=it', 'informativa')}` : 'il fornitore del servizio di posta elettronica del Titolare, per le e-mail ricevute'};</li>
     ${sv.statistiche ? `<li><strong>Google Ireland Ltd.</strong> per Google Analytics, come responsabile del trattamento – ${ext('https://policies.google.com/privacy?hl=it', 'informativa')};</li>` : ''}
     ${sv.pubblicita ? `<li><strong>Google Ireland Ltd.</strong> per Google AdSense, che tratta i dati come autonomo titolare per l’erogazione e la personalizzazione degli annunci – ${ext('https://policies.google.com/technologies/partner-sites?hl=it', 'come Google usa i dati dei siti partner')};</li>` : ''}
   </ul>
   <p>I dati non sono diffusi né venduti. Possono essere comunicati alle autorità competenti solo su loro legittima richiesta.</p>
 
   ${sez('Trasferimenti fuori dall’Unione europea')}
-  <p>${esc(h.nome)}${consenso ? ' e Google' : ''} possono trattare dati anche negli ${esc(h.sede)}. Il trasferimento avviene sulla base della decisione di adeguatezza della Commissione europea relativa al <em>EU-U.S. Data Privacy Framework</em>, per i fornitori certificati, oppure delle clausole contrattuali standard approvate dalla Commissione (art. 46 GDPR).</p>
+  <p>${esc(h.nome)}${consenso || /@(gmail|googlemail)\.com$/i.test(cfg.sito.emailContatto) ? ' e Google' : ''} possono trattare dati anche negli ${esc(h.sede)}. Il trasferimento avviene sulla base della decisione di adeguatezza della Commissione europea relativa al <em>EU-U.S. Data Privacy Framework</em>, per i fornitori certificati, oppure delle clausole contrattuali standard approvate dalla Commissione (art. 46 GDPR).</p>
 
   ${sez('Per quanto tempo conserviamo i dati')}
   <ul>

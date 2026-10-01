@@ -1,9 +1,9 @@
 {
-  "_istruzioni": "Aggiorna a mano i campi 'valore' (numero con il punto come separatore decimale, es. 1.789), 'riferimento' e 'ultimo_aggiornamento' (AAAA-MM-GG). Se un dato ufficiale non è disponibile metti null: il sito mostrerà l'avviso DA AGGIORNARE CON DATI UFFICIALI e chiederà all'utente di inserire il prezzo. Dopo la modifica ripubblica il sito.",
+  "_istruzioni": "I prezzi dei carburanti (benzina, diesel, gpl, metano) sono aggiornati automaticamente ogni giorno da .github/workflows/aggiorna-prezzi.yml (scripts/aggiorna-prezzi.mjs). Energia domestica (ARERA, trimestrale) e colonnine (Adiconsum–TariffEV, mensile) vanno aggiornati a mano: campi 'valore' (punto come separatore decimale), 'riferimento' e 'nota'. Valore null = il sito mostra DA AGGIORNARE CON DATI UFFICIALI.",
   "ultimo_aggiornamento": "2026-10-01",
   "stato": "Aggiornato",
-  "fonte": "Ministero delle Imprese e del Made in Italy (MIMIT) – prezzi medi nazionali dei carburanti; ARERA per l'energia domestica; Osservatorio Adiconsum–TariffEV per la ricarica pubblica",
-  "fonte_url": "https://www.mimit.gov.it/it/prezzi-carburanti-media-nazionale",
+  "fonte": "Carburanti: open data MIMIT – Osservaprezzi (aggiornamento automatico giornaliero); energia domestica: ARERA; colonnine: Osservatorio Adiconsum–TariffEV",
+  "fonte_url": "https://www.mimit.gov.it/it/open-data/elenco-dataset/carburanti-prezzi-praticati-e-anagrafica-degli-impianti",
   "prezzi": {
     "benzina": {
       "etichetta": "Benzina (self)",

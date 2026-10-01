@@ -65,7 +65,7 @@ export function donutSvg(items, center) {
   const cx = 100, cy = 100, R = 96, r = 64;
   let out = '';
   if (total <= 0) {
-    out = `<circle cx="${cx}" cy="${cy}" r="${(R + r) / 2}" fill="none" stroke="#e3e8ec" stroke-width="${R - r}"/>`;
+    out = `<circle cx="${cx}" cy="${cy}" r="${(R + r) / 2}" fill="none" class="chart-empty" stroke-width="${R - r}"/>`;
   } else {
     const visible = items.filter((i) => i.value > 0);
     if (visible.length === 1) {
@@ -179,7 +179,7 @@ export function lineChart(el, series, opt) {
   }
   g += `<text class="chart-axis" x="${W - padR}" y="${H - 4}" text-anchor="end">km all’anno</text>`;
   if (opt.kmUtente > 0 && opt.kmUtente <= xMax) {
-    g += `<line x1="${fmt(X(opt.kmUtente))}" x2="${fmt(X(opt.kmUtente))}" y1="${padT}" y2="${H - padB}" stroke="#8a99a6" stroke-width="1"/>`;
+    g += `<line x1="${fmt(X(opt.kmUtente))}" x2="${fmt(X(opt.kmUtente))}" y1="${padT}" y2="${H - padB}" class="chart-ref"/>`;
     g += `<text class="chart-axis" x="${fmt(X(opt.kmUtente) + 4)}" y="${padT + 10}">i tuoi km</text>`;
   }
   for (const s of series) {
@@ -188,11 +188,11 @@ export function lineChart(el, series, opt) {
   if (opt.pareggio && opt.pareggio > 0 && opt.pareggio <= xMax) {
     const px = X(opt.pareggio);
     const py = Y(series[0].f(opt.pareggio));
-    g += `<circle cx="${fmt(px)}" cy="${fmt(py)}" r="6" fill="var(--ink)" stroke="#fff" stroke-width="2"/>`;
+    g += `<circle cx="${fmt(px)}" cy="${fmt(py)}" r="6" class="chart-dot"/>`;
     const anchor = px > W * 0.6 ? 'end' : 'start';
     g += `<text class="chart-label-strong" x="${fmt(px + (anchor === 'end' ? -10 : 10))}" y="${fmt(py - 10)}" text-anchor="${anchor}">Pareggio: ${num(Math.round(opt.pareggio / 100) * 100)} km</text>`;
   }
-  g += `<line class="hover-line" x1="0" x2="0" y1="${padT}" y2="${H - padB}" stroke="#13212c" stroke-width="1" opacity="0"/>`;
+  g += `<line class="hover-line chart-hover" x1="0" x2="0" y1="${padT}" y2="${H - padB}" opacity="0"/>`;
   g += `<rect class="hover-capture" x="${padL}" y="${padT}" width="${W - padL - padR}" height="${H - padT - padB}" fill="transparent"/>`;
   const legend = series.map((s) => `<li><span class="sw s${s.slot}" aria-hidden="true"></span>${escHtml(s.nome)}</li>`).join('');
   el.innerHTML = `<svg width="${W}" height="${H}" viewBox="0 0 ${W} ${H}" xmlns="${NS}" aria-hidden="true" focusable="false">${g}</svg><ul class="legend">${legend}</ul>`;

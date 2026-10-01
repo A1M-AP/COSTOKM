@@ -156,3 +156,28 @@ export const parseParam = (raw) => {
 };
 
 export const escHtml = (s) => String(s).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+
+/**
+ * Aggiorna un valore numerico con un breve conteggio animato (rispetta "riduci movimento").
+ * Il primo aggiornamento non anima: il valore iniziale è già nell'HTML pre-renderizzato.
+ */
+const riduciMovimento = typeof matchMedia === 'function' && matchMedia('(prefers-reduced-motion: reduce)').matches;
+export function animaNumero(el, valore, formato) {
+  if (!el) return;
+  const da = el._v;
+  el._v = valore;
+  cancelAnimationFrame(el._raf);
+  if (da === undefined || riduciMovimento || !Number.isFinite(da) || Math.abs(da - valore) < 1e-9) {
+    el.textContent = formato(valore);
+    return;
+  }
+  const t0 = performance.now();
+  const dur = 380;
+  const step = (t) => {
+    const k = Math.min(1, (t - t0) / dur);
+    const e = 1 - Math.pow(1 - k, 3);
+    el.textContent = formato(da + (valore - da) * e);
+    if (k < 1) el._raf = requestAnimationFrame(step);
+  };
+  el._raf = requestAnimationFrame(step);
+}

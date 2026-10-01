@@ -3,7 +3,7 @@ import { CATEGORIE, ALIMENTAZIONI, calcolaVeicolo, vocePrincipale } from './calc
 import { VEICOLO_DEFAULT, USO_DEFAULT, CONSUMO_DEFAULT } from './defaults.js';
 import {
   euro, euroKm, pct, num, readField, writeField, validateField, caricaPrezzi, chiavePrezzo,
-  bindActions, paramsFromUrl, parseParam, escHtml,
+  bindActions, paramsFromUrl, parseParam, escHtml, animaNumero,
 } from './ui.js';
 import { donut, stackedBars, onResize } from './charts.js';
 import { highlightHtml, avvisiHtml, residuoInfo, finInfo, anniLabel } from './testi.js';
@@ -218,10 +218,10 @@ function render() {
   ultimoRisultato = r;
 
   out('nome').textContent = v.nome || `Auto ${state.attivo + 1}`;
-  out('perKm').textContent = euro(r.perKm, 2);
-  out('mensile').textContent = euro(r.mensile);
-  out('annuo').textContent = euro(r.totaleAnnuo);
-  out('periodo').textContent = euro(r.periodo);
+  animaNumero(out('perKm'), r.perKm, (x) => euro(x, 2));
+  animaNumero(out('mensile'), r.mensile, (x) => euro(x));
+  animaNumero(out('annuo'), r.totaleAnnuo, (x) => euro(x));
+  animaNumero(out('periodo'), r.periodo, (x) => euro(x));
   out('anniLabel').textContent = anniLabel(uv.anni);
   out('stickyText').textContent = `${euroKm(r.perKm)} · ${euro(r.mensile)}/mese`;
   avvisiEl.innerHTML = avvisiHtml(r);

@@ -121,7 +121,9 @@ export function layout({ page, body, css, cfg, runtimeConfig }) {
 <title>${esc(title)}</title>
 <meta name="description" content="${esc(page.description)}">
 ${page.noindex ? '<meta name="robots" content="noindex, follow">' : `<link rel="canonical" href="${url}">\n<meta name="robots" content="index, follow, max-image-preview:large">`}
-<meta name="theme-color" content="#0f3d5e">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#f3f5fa" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0a111d" media="(prefers-color-scheme: dark)">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="${esc(s.nome)}">
 <meta property="og:locale" content="it_IT">

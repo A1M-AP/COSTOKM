@@ -57,7 +57,7 @@ export default {
 <form class="calc-form" id="calc-form" novalidate aria-label="Dati del confronto">
   <p class="calc-note">Valori di esempio: <strong>sostituiscili con i tuoi</strong>. Il risultato si aggiorna in tempo reale.</p>
   <div class="grid-2">
-    ${c.field({ name: 'km', label: 'Km percorsi all’anno', unit: 'km', value: s.km, min: 100, max: 200000, step: 1, required: true })}
+    ${c.field({ name: 'km', label: 'Km all’anno', unit: 'km', value: s.km, min: 100, max: 200000, step: 1, required: true })}
     ${c.field({ name: 'anni', label: 'Anni di possesso', unit: 'anni', value: s.anni, min: 1, max: 30, step: 1, required: true })}
   </div>
 

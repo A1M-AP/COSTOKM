@@ -2,7 +2,7 @@
 import { CONFRONTO_DEFAULT, CONSUMO_DEFAULT } from './defaults.js';
 import { ALIMENTAZIONI } from './calc.js';
 import { calcolaConfronto, testoPareggio, testoDifferenza, tabellaConfronto, CAMPI_T, CAMPI_E } from './confronto-core.js';
-import { euro, num, readField, writeField, validateField, caricaPrezzi, chiavePrezzo, bindActions, paramsFromUrl, parseParam, escHtml } from './ui.js';
+import { euro, num, readField, writeField, validateField, caricaPrezzi, chiavePrezzo, bindActions, paramsFromUrl, parseParam, escHtml, animaNumero } from './ui.js';
 import { lineChart, onResize } from './charts.js';
 import { anniLabel } from './testi.js';
 
@@ -62,10 +62,10 @@ function render() {
   out('pareggioSotto').innerHTML = tp.sotto;
   out('avvisi').innerHTML = res.avvisi.map((a) => `<p class="avviso">${escHtml(a)}</p>`).join('');
   out('nomeT').textContent = res.nomeT;
-  out('tAnno').textContent = `${euro(res.rt.totaleAnnuo)}/anno`;
-  out('tKm').textContent = `${euro(res.rt.perKm, 3)}/km`;
-  out('eAnno').textContent = `${euro(res.re.totaleAnnuo)}/anno`;
-  out('eKm').textContent = `${euro(res.re.perKm, 3)}/km`;
+  animaNumero(out('tAnno'), res.rt.totaleAnnuo, (x) => `${euro(x)}/anno`);
+  animaNumero(out('tKm'), res.rt.perKm, (x) => `${euro(x, 3)}/km`);
+  animaNumero(out('eAnno'), res.re.totaleAnnuo, (x) => `${euro(x)}/anno`);
+  animaNumero(out('eKm'), res.re.perKm, (x) => `${euro(x, 3)}/km`);
   out('differenza').innerHTML = testoDifferenza(res, state);
   out('tabella').innerHTML = tabellaConfronto(res, state);
   out('stickyText').textContent = tp.titolo.replace('L’elettrica conviene', 'Elettrica conveniente');

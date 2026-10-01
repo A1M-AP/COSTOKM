@@ -2,7 +2,7 @@
 import { VIAGGIO_DEFAULT, CONSUMO_DEFAULT } from './defaults.js';
 import { ALIMENTAZIONI } from './calc.js';
 import { uscitaViaggio, CAMPI_VIAGGIO, chiavePrezzoViaggio } from './viaggio-core.js';
-import { readField, writeField, validateField, caricaPrezzi, bindActions, paramsFromUrl, parseParam, escHtml } from './ui.js';
+import { readField, writeField, validateField, caricaPrezzi, bindActions, paramsFromUrl, parseParam, escHtml, animaNumero, euro } from './ui.js';
 
 const root = document.querySelector('[data-viaggio]');
 const form = root.querySelector('#calc-form');
@@ -49,7 +49,12 @@ function render() {
   }
   ris.classList.remove('is-stale');
   ultimo = uscitaViaggio(state);
-  for (const [k, v] of Object.entries(ultimo.valori)) out(k).textContent = v;
+  const r = ultimo.r;
+  animaNumero(out('carburante'), r.carburante, (x) => euro(x, 2));
+  animaNumero(out('totale'), r.totale, (x) => euro(x, 2));
+  animaNumero(out('perPersona'), r.perPersona, (x) => euro(x, 2));
+  out('consumoTot').textContent = ultimo.valori.consumoTot;
+  out('dettaglio').textContent = ultimo.valori.dettaglio;
   out('avvisi').innerHTML = ultimo.avvisi.map((a) => `<p class="avviso">${escHtml(a)}</p>`).join('');
 }
 

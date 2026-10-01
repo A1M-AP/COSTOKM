@@ -32,7 +32,7 @@ export function calculator(c, preset = 'standard') {
   <fieldset class="uso">
     <legend class="sr-only">Utilizzo (comune a tutti i veicoli)</legend>
     <div class="grid-2">
-      ${c.field({ name: 'km', label: 'Km percorsi all’anno', unit: 'km', value: u.km, min: 100, max: 200000, step: 1, required: true })}
+      ${c.field({ name: 'km', label: 'Km all’anno', unit: 'km', value: u.km, min: 100, max: 200000, step: 1, required: true })}
       ${c.field({ name: 'anni', label: 'Anni di possesso', unit: 'anni', value: u.anni, min: 1, max: 30, step: 1, required: true })}
     </div>
   </fieldset>
@@ -59,13 +59,13 @@ export function calculator(c, preset = 'standard') {
         <div class="field">
           <span class="label-like" id="residuo-modo-label">Come stimi il valore a fine possesso?</span>
           <div class="seg" role="radiogroup" aria-labelledby="residuo-modo-label">
-            <label><input type="radio" name="residuoModo" value="valore"${v.residuoModo === 'valore' ? ' checked' : ''}> Valore residuo in €</label>
-            <label><input type="radio" name="residuoModo" value="perc"${v.residuoModo === 'perc' ? ' checked' : ''}> Svalutazione % annua</label>
+            <label><input type="radio" name="residuoModo" value="valore"${v.residuoModo === 'valore' ? ' checked' : ''}> Valore in €</label>
+            <label><input type="radio" name="residuoModo" value="perc"${v.residuoModo === 'perc' ? ' checked' : ''}> % all’anno</label>
           </div>
         </div>
         <div class="grid-2">
           ${f({ name: 'prezzo', label: 'Prezzo d’acquisto', unit: '€', min: 0, max: 1000000, required: true, hint: 'Prezzo finale pagato, al netto di sconti e incentivi.' })}
-          ${f({ name: 'residuo', label: 'Valore residuo stimato', unit: '€', min: 0, max: 1000000, group: 'residuo-valore', hidden: v.residuoModo !== 'valore', hint: 'Quanto pensi di ricavare dalla vendita o dalla permuta.' })}
+          ${f({ name: 'residuo', label: 'Valore residuo', unit: '€', min: 0, max: 1000000, group: 'residuo-valore', hidden: v.residuoModo !== 'valore', hint: 'Quanto pensi di ricavare dalla vendita o dalla permuta.' })}
           ${f({ name: 'svalPerc', label: 'Svalutazione annua', unit: '%', min: 0, max: 60, group: 'residuo-perc', hidden: v.residuoModo !== 'perc', hint: 'Perdita di valore annua, sul valore dell’anno precedente.' })}
           <p class="calc-hint" data-out="residuoInfo">${residuoInfo(v, r, u.anni)}</p>
         </div>

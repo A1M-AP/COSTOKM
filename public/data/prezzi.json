@@ -1,6 +1,6 @@
 {
   "_istruzioni": "I prezzi dei carburanti (benzina, diesel, gpl, metano) sono aggiornati automaticamente ogni giorno da .github/workflows/aggiorna-prezzi.yml (scripts/aggiorna-prezzi.mjs). Energia domestica (ARERA, trimestrale) e colonnine (Adiconsum–TariffEV, mensile) vanno aggiornati a mano: campi 'valore' (punto come separatore decimale), 'riferimento' e 'nota'. Valore null = il sito mostra DA AGGIORNARE CON DATI UFFICIALI.",
-  "ultimo_aggiornamento": "2026-10-05",
+  "ultimo_aggiornamento": "2026-10-06",
   "stato": "Aggiornato automaticamente",
   "fonte": "Carburanti: open data MIMIT – Osservaprezzi (aggiornamento automatico giornaliero); energia domestica: ARERA; colonnine: Osservatorio Adiconsum–TariffEV",
   "fonte_url": "https://www.mimit.gov.it/it/open-data/elenco-dataset/carburanti-prezzi-praticati-e-anagrafica-degli-impianti",
@@ -8,33 +8,33 @@
     "benzina": {
       "etichetta": "Benzina (self)",
       "unita": "€/l",
-      "valore": 2.05,
-      "riferimento": "2026-10-04",
-      "nota": "Media nazionale self service, rete stradale, calcolata sui prezzi alle 8:00 comunicati da 19842 impianti (open data MIMIT – Osservaprezzi carburanti), 04/10/2026",
+      "valore": 2.048,
+      "riferimento": "2026-10-05",
+      "nota": "Media nazionale self service, rete stradale, calcolata sui prezzi alle 8:00 comunicati da 19842 impianti (open data MIMIT – Osservaprezzi carburanti), 05/10/2026",
       "fonte_url": "https://www.mimit.gov.it/it/open-data/elenco-dataset/carburanti-prezzi-praticati-e-anagrafica-degli-impianti"
     },
     "diesel": {
       "etichetta": "Gasolio (self)",
       "unita": "€/l",
-      "valore": 2.244,
-      "riferimento": "2026-10-04",
-      "nota": "Media nazionale self service, rete stradale, calcolata sui prezzi alle 8:00 comunicati da 19772 impianti (open data MIMIT – Osservaprezzi carburanti), 04/10/2026",
+      "valore": 2.242,
+      "riferimento": "2026-10-05",
+      "nota": "Media nazionale self service, rete stradale, calcolata sui prezzi alle 8:00 comunicati da 19772 impianti (open data MIMIT – Osservaprezzi carburanti), 05/10/2026",
       "fonte_url": "https://www.mimit.gov.it/it/open-data/elenco-dataset/carburanti-prezzi-praticati-e-anagrafica-degli-impianti"
     },
     "gpl": {
       "etichetta": "GPL (servito)",
       "unita": "€/l",
       "valore": 0.758,
-      "riferimento": "2026-10-04",
-      "nota": "Media nazionale servito, rete stradale, calcolata sui prezzi alle 8:00 comunicati da 4254 impianti (open data MIMIT – Osservaprezzi carburanti), 04/10/2026",
+      "riferimento": "2026-10-05",
+      "nota": "Media nazionale servito, rete stradale, calcolata sui prezzi alle 8:00 comunicati da 4252 impianti (open data MIMIT – Osservaprezzi carburanti), 05/10/2026",
       "fonte_url": "https://www.mimit.gov.it/it/open-data/elenco-dataset/carburanti-prezzi-praticati-e-anagrafica-degli-impianti"
     },
     "metano": {
       "etichetta": "Metano (servito)",
       "unita": "€/kg",
       "valore": 1.902,
-      "riferimento": "2026-10-04",
-      "nota": "Media nazionale servito, rete stradale, calcolata sui prezzi alle 8:00 comunicati da 1401 impianti (open data MIMIT – Osservaprezzi carburanti), 04/10/2026",
+      "riferimento": "2026-10-05",
+      "nota": "Media nazionale servito, rete stradale, calcolata sui prezzi alle 8:00 comunicati da 1401 impianti (open data MIMIT – Osservaprezzi carburanti), 05/10/2026",
       "fonte_url": "https://www.mimit.gov.it/it/open-data/elenco-dataset/carburanti-prezzi-praticati-e-anagrafica-degli-impianti"
     },
     "elettricita_casa": {

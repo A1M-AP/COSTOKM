@@ -1,147 +1,147 @@
 {
-  "riferimento": "2026-10-10",
-  "aggiornato": "2026-10-11",
+  "riferimento": "2026-10-11",
+  "aggiornato": "2026-10-12",
   "fonte": "Elaborazione costokm.it su open data MIMIT – Osservaprezzi carburanti (rete stradale; self per benzina e gasolio, servito per GPL e metano)",
   "regioni": {
     "Abruzzo": {
       "benzina": 2.038,
-      "diesel": 2.248,
+      "diesel": 2.246,
       "gpl": 0.779,
-      "metano": 1.89,
-      "impianti": 545
+      "metano": 1.885,
+      "impianti": 543
     },
     "Basilicata": {
-      "benzina": 2.068,
-      "diesel": 2.27,
+      "benzina": 2.069,
+      "diesel": 2.272,
       "gpl": 0.757,
       "metano": 1.817,
       "impianti": 220
     },
     "Calabria": {
-      "benzina": 2.048,
-      "diesel": 2.265,
+      "benzina": 2.047,
+      "diesel": 2.263,
       "gpl": 0.816,
       "metano": 1.913,
       "impianti": 669
     },
     "Campania": {
-      "benzina": 2.059,
-      "diesel": 2.263,
-      "gpl": 0.738,
+      "benzina": 2.06,
+      "diesel": 2.265,
+      "gpl": 0.739,
       "metano": 1.813,
       "impianti": 1601
     },
     "Emilia-Romagna": {
-      "benzina": 2.037,
-      "diesel": 2.253,
+      "benzina": 2.036,
+      "diesel": 2.251,
       "gpl": 0.761,
-      "metano": 1.913,
+      "metano": 1.914,
       "impianti": 1602
     },
     "Friuli-Venezia Giulia": {
       "benzina": 2.034,
       "diesel": 2.264,
-      "gpl": 0.753,
+      "gpl": 0.754,
       "metano": 1.998,
       "impianti": 397
     },
     "Lazio": {
       "benzina": 2.019,
-      "diesel": 2.236,
+      "diesel": 2.235,
       "gpl": 0.759,
-      "metano": 1.955,
+      "metano": 1.956,
       "impianti": 1856
     },
     "Liguria": {
       "benzina": 2.021,
-      "diesel": 2.246,
+      "diesel": 2.244,
       "gpl": 0.863,
       "metano": 1.923,
       "impianti": 438
     },
     "Lombardia": {
-      "benzina": 2.025,
-      "diesel": 2.248,
-      "gpl": 0.756,
+      "benzina": 2.024,
+      "diesel": 2.246,
+      "gpl": 0.757,
       "metano": 1.854,
-      "impianti": 2631
+      "impianti": 2630
     },
     "Marche": {
-      "benzina": 2.026,
-      "diesel": 2.238,
+      "benzina": 2.025,
+      "diesel": 2.235,
       "gpl": 0.791,
-      "metano": 1.931,
-      "impianti": 669
+      "metano": 1.932,
+      "impianti": 671
     },
     "Molise": {
       "benzina": 2.037,
-      "diesel": 2.256,
+      "diesel": 2.257,
       "gpl": 0.808,
       "metano": 1.924,
       "impianti": 140
     },
     "Piemonte": {
-      "benzina": 2.028,
-      "diesel": 2.252,
+      "benzina": 2.027,
+      "diesel": 2.251,
       "gpl": 0.752,
-      "metano": 1.889,
+      "metano": 1.89,
       "impianti": 1558
     },
     "Puglia": {
-      "benzina": 2.04,
-      "diesel": 2.252,
-      "gpl": 0.753,
+      "benzina": 2.041,
+      "diesel": 2.25,
+      "gpl": 0.754,
       "metano": 1.909,
-      "impianti": 1361
+      "impianti": 1360
     },
     "Sardegna": {
-      "benzina": 2.042,
-      "diesel": 2.262,
+      "benzina": 2.041,
+      "diesel": 2.26,
       "gpl": 0.864,
       "metano": null,
-      "impianti": 593
+      "impianti": 591
     },
     "Sicilia": {
-      "benzina": 2.042,
+      "benzina": 2.041,
       "diesel": 2.256,
-      "gpl": 0.807,
+      "gpl": 0.808,
       "metano": 2.041,
       "impianti": 1580
     },
     "Toscana": {
-      "benzina": 2.037,
-      "diesel": 2.256,
+      "benzina": 2.036,
+      "diesel": 2.255,
       "gpl": 0.776,
-      "metano": 2.005,
+      "metano": 2.006,
       "impianti": 1389
     },
     "Trentino-Alto Adige": {
       "benzina": 2.049,
-      "diesel": 2.26,
+      "diesel": 2.259,
       "gpl": 0.825,
       "metano": 1.968,
       "impianti": 342
     },
     "Umbria": {
-      "benzina": 2.031,
-      "diesel": 2.24,
+      "benzina": 2.03,
+      "diesel": 2.239,
       "gpl": 0.781,
       "metano": 1.967,
       "impianti": 405
     },
     "Valle d'Aosta": {
-      "benzina": 2.034,
-      "diesel": 2.265,
+      "benzina": 2.032,
+      "diesel": 2.264,
       "gpl": null,
       "metano": null,
-      "impianti": 63
+      "impianti": 62
     },
     "Veneto": {
       "benzina": 2.03,
-      "diesel": 2.247,
+      "diesel": 2.246,
       "gpl": 0.774,
-      "metano": 1.924,
-      "impianti": 1701
+      "metano": 1.926,
+      "impianti": 1703
     }
   }
 }

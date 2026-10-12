@@ -1,5 +1,5 @@
 import { calculator } from '../calculator.mjs';
-import { correlati } from '../correlati.mjs';
+import { grigliaStrumenti } from '../correlati.mjs';
 
 const faq = [
   {
@@ -44,6 +44,7 @@ export default {
   <p>Costo al km, al mese e all’anno con tutte le voci, svalutazione compresa. Confronta fino a 3 auto.</p>
 </section>
 ${calculator(c, 'standard')}
+${grigliaStrumenti('/')}
 ${c.ad('dopo-calcolatore', 'wide')}
 <div class="layout-article">
 <div>
@@ -105,7 +106,6 @@ ${c.ad('dopo-calcolatore', 'wide')}
   <p>Aggiungi fino a tre auto con il pulsante <em>Aggiungi auto</em> per confrontarle con lo stesso chilometraggio: ogni nuova scheda parte dai valori di quella attiva, così basta modificare le differenze. Puoi copiare il riepilogo, stamparlo oppure condividerlo con un link che ricarica esattamente lo stesso calcolo. Se l’assicurazione o la svalutazione pesano molto, può valere la pena confrontare i preventivi RC auto o valutare un noleggio a lungo termine, mettendo il canone a confronto con il costo mensile calcolato qui.</p>
 </article>
 ${c.faq(faq)}
-${correlati('/')}
 </div>
 <aside aria-label="Pubblicità">${c.ad('laterale', 'side')}</aside>
 </div>

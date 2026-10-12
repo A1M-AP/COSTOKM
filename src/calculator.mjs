@@ -2,6 +2,7 @@ import { VEICOLO_DEFAULT, USO_DEFAULT } from '../public/assets/js/defaults.js';
 import { CATEGORIE, calcolaVeicolo } from '../public/assets/js/calc.js';
 import { euro, euroKm, pct } from '../public/assets/js/ui.js';
 import { donutSvg } from '../public/assets/js/charts.js';
+import { icon } from './icons.mjs';
 import { highlightHtml, avvisiHtml, residuoInfo, finInfo, anniLabel } from '../public/assets/js/testi.js';
 
 const prezzoDi = (prezzi, k) => (typeof prezzi?.prezzi?.[k]?.valore === 'number' && prezzi.prezzi[k].valore > 0 ? prezzi.prezzi[k].valore : null);
@@ -54,7 +55,7 @@ export function calculator(c, preset = 'standard') {
     </div>
 
     <details class="sezione" open>
-      <summary><span>Acquisto</span><span class="sum-val" data-sum="acquisto">${sum(r.voci.svalutazione + r.voci.interessi)}</span></summary>
+      <summary><span class="sum-tit">${icon('acquisto')}Acquisto</span><span class="sum-val" data-sum="acquisto">${sum(r.voci.svalutazione + r.voci.interessi)}</span></summary>
       <div class="sezione-body">
         <div class="field">
           <span class="label-like" id="residuo-modo-label">Come stimi il valore a fine possesso?</span>
@@ -81,7 +82,7 @@ export function calculator(c, preset = 'standard') {
     </details>
 
     <details class="sezione" open>
-      <summary><span>Alimentazione e consumi</span><span class="sum-val" data-sum="energia">${sum(r.voci.energia)}</span></summary>
+      <summary><span class="sum-tit">${icon('prezzi')}Alimentazione e consumi</span><span class="sum-val" data-sum="energia">${sum(r.voci.energia)}</span></summary>
       <div class="sezione-body">
         ${c.select({ name: 'alimentazione', label: 'Alimentazione', value: v.alimentazione, options: c.alimentazioniOptions() })}
         <div class="grid-2" data-group="termica"${v.alimentazione === 'elettrica' ? ' hidden' : ''}>
@@ -103,7 +104,7 @@ export function calculator(c, preset = 'standard') {
     </details>
 
     <details class="sezione">
-      <summary><span>Costi fissi annui</span><span class="sum-val" data-sum="fissi">${sum(r.voci.assicurazione + r.voci.bollo + v.garage + v.abbonamenti)}</span></summary>
+      <summary><span class="sum-tit">${icon('scudo')}Costi fissi annui</span><span class="sum-val" data-sum="fissi">${sum(r.voci.assicurazione + r.voci.bollo + v.garage + v.abbonamenti)}</span></summary>
       <div class="sezione-body">
         <div class="grid-2">
           ${f({ name: 'rc', label: 'Assicurazione RC auto', unit: '€/anno', max: 20000 })}
@@ -119,7 +120,7 @@ export function calculator(c, preset = 'standard') {
     </details>
 
     <details class="sezione">
-      <summary><span>Manutenzione</span><span class="sum-val" data-sum="manutenzione">${sum(r.voci.manutenzione + r.voci.pneumatici)}</span></summary>
+      <summary><span class="sum-tit">${icon('chiave')}Manutenzione</span><span class="sum-val" data-sum="manutenzione">${sum(r.voci.manutenzione + r.voci.pneumatici)}</span></summary>
       <div class="sezione-body">
         <div class="grid-2">
           ${f({ name: 'tagliandi', label: 'Tagliandi', unit: '€/anno', max: 20000 })}
@@ -133,7 +134,7 @@ export function calculator(c, preset = 'standard') {
     </details>
 
     <details class="sezione">
-      <summary><span>Altri costi</span><span class="sum-val" data-sum="altri">${sum(v.pedaggi + v.lavaggi + v.multe)}</span></summary>
+      <summary><span class="sum-tit">${icon('altro')}Altri costi</span><span class="sum-val" data-sum="altri">${sum(v.pedaggi + v.lavaggi + v.multe)}</span></summary>
       <div class="sezione-body">
         <div class="grid-3">
           ${f({ name: 'pedaggi', label: 'Pedaggi', unit: '€/anno', max: 50000 })}

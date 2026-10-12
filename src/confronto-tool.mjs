@@ -1,3 +1,4 @@
+import { icon } from './icons.mjs';
 import { CONFRONTO_PRESET } from '../public/assets/js/defaults.js';
 import { ALIMENTAZIONI } from '../public/assets/js/calc.js';
 import { calcolaConfronto, testoPareggio, testoDifferenza, tabellaConfronto, applicaPrezziAuto } from '../public/assets/js/confronto-core.js';
@@ -31,7 +32,7 @@ export function confrontoTool(c, preset) {
     const el = v.alimentazione === 'elettrica';
     const a = ALIMENTAZIONI[v.alimentazione];
     return `<details class="sezione" open>
-    <summary><span data-out="titolo-${lettera}">${nome}</span></summary>
+    <summary><span class="sum-tit">${icon('auto')}<span data-out="titolo-${lettera}">${nome}</span></span></summary>
     <div class="sezione-body">
       ${c.select({ prefix: lettera, name: `${lettera}_alimentazione`, label: 'Alimentazione', value: v.alimentazione, options: c.alimentazioniOptions() })}
       <div class="grid-2">

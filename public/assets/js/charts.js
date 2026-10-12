@@ -183,12 +183,12 @@ export function lineChart(el, series, opt) {
     g += `<text class="chart-axis" x="${fmt(X(opt.kmUtente) + 4)}" y="${padT + 10}">i tuoi km</text>`;
   }
   for (const s of series) {
-    g += `<line x1="${fmt(X(0))}" y1="${fmt(Y(s.f(0)))}" x2="${fmt(X(xMax))}" y2="${fmt(Y(s.f(xMax)))}" stroke="var(--c${s.slot})" stroke-width="2" stroke-linecap="round"/>`;
+    g += `<line x1="${fmt(X(0))}" y1="${fmt(Y(s.f(0)))}" x2="${fmt(X(xMax))}" y2="${fmt(Y(s.f(xMax)))}" stroke="var(--c${s.slot})" stroke-width="2" stroke-linecap="round" class="traccia" pathLength="1"/>`;
   }
   if (opt.pareggio && opt.pareggio > 0 && opt.pareggio <= xMax) {
     const px = X(opt.pareggio);
     const py = Y(series[0].f(opt.pareggio));
-    g += `<circle cx="${fmt(px)}" cy="${fmt(py)}" r="6" class="chart-dot"/>`;
+    g += `<circle cx="${fmt(px)}" cy="${fmt(py)}" r="6" class="chart-dot punto"/>`;
     const anchor = px > W * 0.6 ? 'end' : 'start';
     g += `<text class="chart-label-strong" x="${fmt(px + (anchor === 'end' ? -10 : 10))}" y="${fmt(py - 10)}" text-anchor="${anchor}">Pareggio: ${num(Math.round(opt.pareggio / 100) * 100)} km</text>`;
   }
@@ -261,9 +261,9 @@ export function serieTemporale(el, punti, serie, opt = {}) {
   }
   for (const s of serie) {
     const pts = punti.map((p, i) => (typeof p[s.chiave] === 'number' ? `${fmt(X(i))},${fmt(Y(p[s.chiave]))}` : null)).filter(Boolean);
-    g += `<polyline points="${pts.join(' ')}" fill="none" stroke="var(--c${s.slot})" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>`;
+    g += `<polyline class="traccia" pathLength="1" points="${pts.join(' ')}" fill="none" stroke="var(--c${s.slot})" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>`;
     const ult = punti[punti.length - 1][s.chiave];
-    if (typeof ult === 'number') g += `<circle cx="${fmt(X(punti.length - 1))}" cy="${fmt(Y(ult))}" r="4" fill="var(--c${s.slot})" class="chart-ring"/>`;
+    if (typeof ult === 'number') g += `<circle cx="${fmt(X(punti.length - 1))}" cy="${fmt(Y(ult))}" r="4" fill="var(--c${s.slot})" class="chart-ring punto"/>`;
   }
   g += `<line class="hover-line chart-hover" x1="0" x2="0" y1="${padT}" y2="${H - padB}" opacity="0"/>`;
   g += `<rect class="hover-capture" x="${padL}" y="${padT}" width="${W - padL - padR}" height="${H - padT - padB}" fill="transparent"/>`;

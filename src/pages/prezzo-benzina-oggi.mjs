@@ -1,12 +1,13 @@
 import { correlati } from '../correlati.mjs';
+import { icon } from '../icons.mjs';
 import { esc, dataIt } from '../util.mjs';
 import { num } from '../../public/assets/js/ui.js';
 
 const CARB = [
-  { k: 'benzina', label: 'Benzina', modo: 'self', unita: '€/l' },
-  { k: 'diesel', label: 'Gasolio', modo: 'self', unita: '€/l' },
-  { k: 'gpl', label: 'GPL', modo: 'servito', unita: '€/l' },
-  { k: 'metano', label: 'Metano', modo: 'servito', unita: '€/kg' },
+  { k: 'benzina', label: 'Benzina', modo: 'self', unita: '€/l', icona: 'prezzi' },
+  { k: 'diesel', label: 'Gasolio', modo: 'self', unita: '€/l', icona: 'diesel' },
+  { k: 'gpl', label: 'GPL', modo: 'servito', unita: '€/l', icona: 'gpl' },
+  { k: 'metano', label: 'Metano', modo: 'servito', unita: '€/kg', icona: 'metano' },
 ];
 
 const faq = [
@@ -59,6 +60,7 @@ export default {
     };
 
     const schede = CARB.map((x) => `<div class="prezzo-card">
+      <span class="prezzo-ico">${icon(x.icona)}</span>
       <span class="kpi-label">${x.label} <span class="modo">${x.modo}</span></span>
       <span class="prezzo-valore">${prezzo3(pz[x.k]?.valore)} <small>${x.unita}</small></span>
       ${variazione(x.k)}

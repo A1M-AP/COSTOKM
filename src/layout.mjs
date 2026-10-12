@@ -1,12 +1,13 @@
 import { esc, jsonLd } from './util.mjs';
-import { STRUMENTI } from './correlati.mjs';
+import { STRUMENTI, strumentoDi } from './correlati.mjs';
+import { icon } from './icons.mjs';
 
 const NAV = [
-  { href: '/', label: 'Calcolatore' },
-  { href: '/prezzo-benzina-oggi/', label: 'Prezzi oggi' },
-  { href: '/confronto-elettrica-benzina/', label: 'Confronti' },
-  { href: '/rimborso-chilometrico/', label: 'Rimborso km' },
-  { href: '/costo-carburante-viaggio/', label: 'Costo viaggio' },
+  { href: '/', label: 'Calcolatore', icona: 'calcolatore' },
+  { href: '/prezzo-benzina-oggi/', label: 'Prezzi oggi', icona: 'prezzi' },
+  { href: '/confronto-elettrica-benzina/', label: 'Confronti', icona: 'auto' },
+  { href: '/rimborso-chilometrico/', label: 'Rimborso km', icona: 'rimborso' },
+  { href: '/costo-carburante-viaggio/', label: 'Costo viaggio', icona: 'viaggio' },
 ];
 const CONFRONTI = ['/confronto-elettrica-benzina/', '/diesel-o-benzina/', '/costo-auto-ibrida/', '/gpl-o-metano/'];
 
@@ -96,8 +97,31 @@ function cookieBanner(cfg) {
 </div>`;
 }
 
+/** Sfondo astratto: forme sfumate e linee "di strada" animate (solo decorative, fuori dal flusso). */
+const DECO = `<div class="deco" aria-hidden="true">
+  <span class="blob blob--1"></span><span class="blob blob--2"></span><span class="blob blob--3"></span>
+  <svg class="deco-linee" viewBox="0 0 1200 600" preserveAspectRatio="xMidYMid slice" fill="none">
+    <defs><linearGradient id="deco-g" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#2f55e4" stop-opacity="0"/><stop offset=".5" stop-color="#5b48e8"/><stop offset="1" stop-color="#7b3fe4" stop-opacity="0"/></linearGradient></defs>
+    <path class="linea linea--1" d="M-50 420C200 330 330 520 600 400S1000 210 1260 300"/>
+    <path class="linea linea--2" d="M-50 470C220 390 360 560 640 450S1020 270 1260 360"/>
+    <path class="linea linea--3" d="M-50 520C240 450 390 600 680 500S1040 330 1260 420"/>
+  </svg>
+</div>`;
+
+/** Etichetta con icona sopra il titolo e punti di forza sotto l'introduzione delle pagine strumento. */
+function arricchisciIntro(body, page) {
+  const st = strumentoDi(page.path);
+  if (!st) return body;
+  const eyebrow = `<p class="eyebrow">${icon(st.icona)}<span>${st.eyebrow}</span></p>`;
+  const trust = `<ul class="trust" aria-label="Caratteristiche">
+    <li>${icon('check')}Gratis</li><li>${icon('lucchetto')}Senza registrazione</li><li>${icon('aggiorna')}Prezzi aggiornati ogni giorno</li>
+  </ul>`;
+  return body.replace(/<section class="intro">([\s\S]*?)<\/section>/, (m, inner) => `<section class="intro">${eyebrow}${inner}${trust}</section>`);
+}
+
 export function layout({ page, body, css, cfg, runtimeConfig }) {
   const s = cfg.sito;
+  body = arricchisciIntro(body, page);
   const url = s.url + page.path;
   const title = page.title;
   const ogImage = s.url + '/og-image.png';
@@ -105,7 +129,7 @@ export function layout({ page, body, css, cfg, runtimeConfig }) {
     const current = l.href === page.path
       ? ' aria-current="page"'
       : l.label === 'Confronti' && CONFRONTI.includes(page.path) ? ' class="is-section"' : '';
-    return `<li><a href="${l.href}"${current}>${l.label}</a></li>`;
+    return `<li><a href="${l.href}"${current}>${icon(l.icona)}<span>${l.label}</span></a></li>`;
   }).join('');
   const footerLinks = FOOTER_LINKS.map((l) => `<li><a href="${l.href}">${l.label}</a></li>`).join('');
   const scripts = (page.scripts || [])
@@ -127,7 +151,7 @@ export function layout({ page, body, css, cfg, runtimeConfig }) {
 <meta name="description" content="${esc(page.description)}">
 ${page.noindex ? '<meta name="robots" content="noindex, follow">' : `<link rel="canonical" href="${url}">\n<meta name="robots" content="index, follow, max-image-preview:large">`}
 <meta name="color-scheme" content="light dark">
-<script>try{var t=localStorage.getItem('costokm_tema');if(t==='light'||t==='dark')document.documentElement.setAttribute('data-theme',t)}catch(e){}</script>
+<script>document.documentElement.classList.add('js');try{var t=localStorage.getItem('costokm_tema');if(t==='light'||t==='dark')document.documentElement.setAttribute('data-theme',t)}catch(e){}</script>
 <meta name="theme-color" content="#f3f5fa" media="(prefers-color-scheme: light)">
 <meta name="theme-color" content="#0a111d" media="(prefers-color-scheme: dark)">
 <meta property="og:type" content="website">
@@ -150,6 +174,7 @@ ${structuredData(page, cfg)}
 </head>
 <body>
 <a class="skip-link" href="#contenuto">Vai al contenuto</a>
+${DECO}
 <header class="site-header">
   <div class="wrap header-inner">
     <a class="logo" href="/"><span class="logo-mark" aria-hidden="true">€/km</span><span>costo<b>km</b>.it</span></a>

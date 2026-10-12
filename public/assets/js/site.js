@@ -51,6 +51,27 @@
     });
   }
 
+  /* ---------- Animazioni all'ingresso nello schermo ---------- */
+  // Testi, card e grafici compaiono con una breve animazione quando diventano visibili.
+  // Con "riduci movimento" o senza IntersectionObserver tutto resta subito visibile (vedi CSS).
+  var SELETTORE = '.article:not(.legal), .faq-item, .correlati > a, .sezione-prezzi, .strumenti h2, [data-chart]';
+  var bersagli = document.querySelectorAll(SELETTORE);
+  if ('IntersectionObserver' in window) {
+    var io = new IntersectionObserver(function (voci) {
+      voci.forEach(function (v) {
+        if (!v.isIntersecting) return;
+        var el = v.target;
+        el.classList.add('in-vista');
+        io.unobserve(el);
+        // i grafici si animano solo la prima volta, non a ogni ricalcolo
+        if (el.hasAttribute('data-chart')) setTimeout(function () { el.setAttribute('data-animato', ''); }, 1600);
+      });
+    }, { rootMargin: '0px 0px -6% 0px', threshold: 0.05 });
+    bersagli.forEach(function (el) { io.observe(el); });
+  } else {
+    bersagli.forEach(function (el) { el.classList.add('in-vista'); el.setAttribute('data-animato', ''); });
+  }
+
   /* ---------- Consenso ---------- */
   function leggiConsenso() {
     try {

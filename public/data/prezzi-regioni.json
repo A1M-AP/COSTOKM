@@ -1,46 +1,46 @@
 {
-  "riferimento": "2026-10-13",
-  "aggiornato": "2026-10-14",
+  "riferimento": "2026-10-14",
+  "aggiornato": "2026-10-15",
   "fonte": "Elaborazione costokm.it su open data MIMIT – Osservaprezzi carburanti (rete stradale; self per benzina e gasolio, servito per GPL e metano)",
   "regioni": {
     "Abruzzo": {
-      "benzina": 2.038,
-      "diesel": 2.245,
+      "benzina": 2.037,
+      "diesel": 2.246,
       "gpl": 0.779,
-      "metano": 1.891,
-      "impianti": 540
+      "metano": 1.896,
+      "impianti": 543
     },
     "Basilicata": {
-      "benzina": 2.067,
+      "benzina": 2.069,
       "diesel": 2.274,
-      "gpl": 0.757,
-      "metano": 1.825,
+      "gpl": 0.758,
+      "metano": 1.829,
       "impianti": 218
     },
     "Calabria": {
-      "benzina": 2.047,
+      "benzina": 2.046,
       "diesel": 2.263,
-      "gpl": 0.815,
-      "metano": 1.932,
-      "impianti": 665
+      "gpl": 0.817,
+      "metano": 1.943,
+      "impianti": 666
     },
     "Campania": {
-      "benzina": 2.061,
-      "diesel": 2.268,
-      "gpl": 0.741,
+      "benzina": 2.062,
+      "diesel": 2.269,
+      "gpl": 0.743,
       "metano": 1.815,
       "impianti": 1598
     },
     "Emilia-Romagna": {
-      "benzina": 2.036,
+      "benzina": 2.035,
       "diesel": 2.252,
-      "gpl": 0.764,
-      "metano": 1.924,
-      "impianti": 1601
+      "gpl": 0.765,
+      "metano": 1.933,
+      "impianti": 1600
     },
     "Friuli-Venezia Giulia": {
-      "benzina": 2.034,
-      "diesel": 2.264,
+      "benzina": 2.035,
+      "diesel": 2.265,
       "gpl": 0.757,
       "metano": 2.028,
       "impianti": 397
@@ -49,12 +49,12 @@
       "benzina": 2.018,
       "diesel": 2.232,
       "gpl": 0.759,
-      "metano": 1.96,
+      "metano": 1.964,
       "impianti": 1847
     },
     "Liguria": {
-      "benzina": 2.021,
-      "diesel": 2.242,
+      "benzina": 2.02,
+      "diesel": 2.24,
       "gpl": 0.864,
       "metano": 1.927,
       "impianti": 438
@@ -62,76 +62,76 @@
     "Lombardia": {
       "benzina": 2.024,
       "diesel": 2.246,
-      "gpl": 0.759,
-      "metano": 1.864,
-      "impianti": 2626
+      "gpl": 0.761,
+      "metano": 1.867,
+      "impianti": 2625
     },
     "Marche": {
-      "benzina": 2.025,
-      "diesel": 2.235,
-      "gpl": 0.793,
-      "metano": 1.937,
-      "impianti": 666
+      "benzina": 2.024,
+      "diesel": 2.236,
+      "gpl": 0.794,
+      "metano": 1.948,
+      "impianti": 664
     },
     "Molise": {
-      "benzina": 2.037,
-      "diesel": 2.254,
-      "gpl": 0.804,
+      "benzina": 2.039,
+      "diesel": 2.256,
+      "gpl": 0.803,
       "metano": 1.93,
       "impianti": 140
     },
     "Piemonte": {
       "benzina": 2.027,
-      "diesel": 2.25,
-      "gpl": 0.754,
-      "metano": 1.891,
-      "impianti": 1553
-    },
-    "Puglia": {
-      "benzina": 2.04,
       "diesel": 2.249,
       "gpl": 0.755,
-      "metano": 1.911,
+      "metano": 1.898,
+      "impianti": 1551
+    },
+    "Puglia": {
+      "benzina": 2.041,
+      "diesel": 2.25,
+      "gpl": 0.756,
+      "metano": 1.913,
       "impianti": 1360
     },
     "Sardegna": {
-      "benzina": 2.038,
-      "diesel": 2.258,
+      "benzina": 2.036,
+      "diesel": 2.256,
       "gpl": 0.864,
       "metano": null,
-      "impianti": 592
+      "impianti": 593
     },
     "Sicilia": {
-      "benzina": 2.041,
+      "benzina": 2.039,
       "diesel": 2.256,
       "gpl": 0.809,
-      "metano": 2.075,
-      "impianti": 1577
+      "metano": 2.076,
+      "impianti": 1576
     },
     "Toscana": {
-      "benzina": 2.036,
-      "diesel": 2.254,
-      "gpl": 0.776,
-      "metano": 2.012,
-      "impianti": 1387
+      "benzina": 2.034,
+      "diesel": 2.251,
+      "gpl": 0.777,
+      "metano": 2.03,
+      "impianti": 1386
     },
     "Trentino-Alto Adige": {
-      "benzina": 2.049,
-      "diesel": 2.259,
+      "benzina": 2.048,
+      "diesel": 2.258,
       "gpl": 0.827,
-      "metano": 1.975,
+      "metano": 1.983,
       "impianti": 340
     },
     "Umbria": {
-      "benzina": 2.029,
-      "diesel": 2.238,
-      "gpl": 0.783,
-      "metano": 1.985,
+      "benzina": 2.028,
+      "diesel": 2.237,
+      "gpl": 0.784,
+      "metano": 1.99,
       "impianti": 405
     },
     "Valle d'Aosta": {
-      "benzina": 2.029,
-      "diesel": 2.257,
+      "benzina": 2.03,
+      "diesel": 2.259,
       "gpl": null,
       "metano": null,
       "impianti": 63
@@ -139,9 +139,9 @@
     "Veneto": {
       "benzina": 2.029,
       "diesel": 2.246,
-      "gpl": 0.777,
-      "metano": 1.938,
-      "impianti": 1698
+      "gpl": 0.778,
+      "metano": 1.946,
+      "impianti": 1700
     }
   }
 }

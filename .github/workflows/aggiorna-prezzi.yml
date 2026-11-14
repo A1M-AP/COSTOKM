@@ -32,14 +32,53 @@ jobs:
           node-version: 22
 
       - name: Scarica i dati MIMIT e calcola le medie
-        run: node scripts/aggiorna-prezzi.mjs
+        id: scarica
+        run: |
+          set +e
+          node scripts/aggiorna-prezzi.mjs
+          codice=$?
+          echo "codice=$codice" >> "$GITHUB_OUTPUT"
+          # 2 = sito del Ministero irraggiungibile: gestito con una segnalazione, non come errore
+          if [ "$codice" = "2" ]; then exit 0; fi
+          exit $codice
+
+      - name: Segnala che il sito del Ministero non è raggiungibile
+        if: steps.scarica.outputs.codice == '2'
+        continue-on-error: true
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          TITOLO="Dati MIMIT non raggiungibili"
+          APERTE=$(gh issue list --state open --search "\"$TITOLO\" in:title" --json number --jq 'length')
+          if [ "$APERTE" != "0" ]; then echo "Segnalazione già aperta."; exit 0; fi
+          ULTIMO=$(node -e "console.log(require('./public/data/prezzi.json').prezzi.benzina.riferimento)")
+          {
+            echo "L'aggiornamento automatico non riesce a scaricare i dati aperti del Ministero delle Imprese e del Made in Italy: il sito non risponde ai server di GitHub."
+            echo
+            echo "- Ultimo dato disponibile sul sito: **$ULTIMO** (la pagina dei prezzi avvisa i visitatori se i dati hanno più di 3 giorni)."
+            echo "- L'azione riprova ogni giorno e chiuderà da sola questa segnalazione quando i dati torneranno disponibili."
+            echo "- Per aggiornare a mano da un computer in Italia: \`node scripts/aggiorna-prezzi.mjs\`, poi commit e push di \`public/data\`."
+          } > "$RUNNER_TEMP/irraggiungibile.md"
+          gh issue create --title "$TITOLO" --body-file "$RUNNER_TEMP/irraggiungibile.md"
+
+      - name: Chiudi la segnalazione se i dati sono tornati
+        if: steps.scarica.outputs.codice == '0'
+        continue-on-error: true
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          for n in $(gh issue list --state open --search '"Dati MIMIT non raggiungibili" in:title' --json number --jq '.[].number'); do
+            gh issue close "$n" --comment "Dati di nuovo disponibili: aggiornamento automatico ripreso."
+          done
 
       - name: Verifica (test e build)
+        if: steps.scarica.outputs.codice == '0'
         run: |
           npm test
           node build.mjs
 
       - name: Salva e pubblica
+        if: steps.scarica.outputs.codice == '0'
         run: |
           if git diff --quiet -- public/data && [ -z "$(git ls-files --others --exclude-standard public/data)" ]; then
             echo "Nessuna modifica ai prezzi."
@@ -52,6 +91,7 @@ jobs:
           git push
 
       - name: Promemoria per i prezzi da aggiornare a mano
+        if: steps.scarica.outputs.codice == '0'
         continue-on-error: true
         env:
           GH_TOKEN: ${{ github.token }}

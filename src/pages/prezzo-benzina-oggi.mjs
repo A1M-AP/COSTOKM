@@ -111,7 +111,7 @@ export default {
 
 <section class="prezzi-oggi" aria-label="Prezzi medi di oggi">
   <div class="prezzi-grid">${schede}</div>
-  <p class="small fonte-prezzi">Fonte: elaborazione costokm.it su <a href="https://www.mimit.gov.it/it/open-data/elenco-dataset/carburanti-prezzi-praticati-e-anagrafica-degli-impianti" rel="noopener" target="_blank">open data MIMIT – Osservaprezzi carburanti<span class="sr-only"> (sito esterno)</span></a>. Autostrade escluse; self per benzina e gasolio, servito per GPL e metano.</p>
+  <p class="small fonte-prezzi" data-riferimento="${esc(rif || '')}">Fonte: elaborazione costokm.it su <a href="https://www.mimit.gov.it/it/open-data/elenco-dataset/carburanti-prezzi-praticati-e-anagrafica-degli-impianti" rel="noopener" target="_blank">open data MIMIT – Osservaprezzi carburanti<span class="sr-only"> (sito esterno)</span></a>. Autostrade escluse; self per benzina e gasolio, servito per GPL e metano.</p>
   <div class="cta-row">
     <a class="btn btn-primary" href="/costo-carburante-viaggio/">Calcola il costo di un viaggio</a>
     <a class="btn btn-secondary" href="/">Quanto ti costa la tua auto</a>

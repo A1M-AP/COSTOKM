@@ -1,6 +1,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { parseCsv, dataEstrazione, impiantiAutostradali, calcolaMedie, applicaMedie, regioneDiImpianto, riassuntoRegioni, aggiornaStorico, REGIONE_DI_PROVINCIA } from '../scripts/aggiorna-prezzi.mjs';
+import { parseCsv, dataEstrazione, impiantiAutostradali, calcolaMedie, applicaMedie, regioneDiImpianto, riassuntoRegioni, aggiornaStorico, REGIONE_DI_PROVINCIA, erroreDiRete } from '../scripts/aggiorna-prezzi.mjs';
 
 // Dati di esempio nel formato dei CSV MIMIT (valori inventati solo per il test).
 const PREZZI_PIPE = `Estrazione del 2026-09-30
@@ -93,4 +93,11 @@ test('storico: aggiunge, sostituisce lo stesso giorno e ordina', () => {
   st = aggiornaStorico(st, '2026-10-01', m(2.10));
   st = aggiornaStorico(st, '2026-09-30', m(2.12));
   assert.deepEqual(st.serie.map((x) => [x.data, x.benzina]), [['2026-09-30', 2.12], ['2026-10-01', 2.1]]);
+});
+
+test('distingue gli errori di rete dai problemi dei dati', () => {
+  assert.equal(erroreDiRete(new TypeError('fetch failed', { cause: { code: 'UND_ERR_CONNECT_TIMEOUT' } })), true);
+  assert.equal(erroreDiRete(Object.assign(new Error('x'), { name: 'TimeoutError' })), true);
+  assert.equal(erroreDiRete(new Error('benzina: variazione anomala 2 → 3')), false);
+  assert.equal(erroreDiRete(new Error('https://x: HTTP 404')), false);
 });

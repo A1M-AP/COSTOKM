@@ -25,3 +25,17 @@ if (box) {
   }));
   onResize(disegna);
 }
+
+// Se i prezzi hanno più di 3 giorni (aggiornamento automatico in ritardo) lo diciamo chiaramente.
+const fonte = document.querySelector('[data-riferimento]');
+const rif = fonte?.dataset.riferimento;
+if (rif) {
+  const giorni = Math.floor((Date.now() - new Date(rif + 'T08:00:00+01:00').getTime()) / 86400000);
+  if (giorni > 3) {
+    const d = new Date(rif + 'T12:00:00Z').toLocaleDateString('it-IT', { day: 'numeric', month: 'long', timeZone: 'UTC' });
+    const avviso = document.createElement('strong');
+    avviso.className = 'avviso-vecchio';
+    avviso.textContent = `Attenzione: questi sono gli ultimi prezzi disponibili, del ${d}. L’aggiornamento automatico è in ritardo perché i dati del Ministero non sono raggiungibili. `;
+    fonte.prepend(avviso);
+  }
+}

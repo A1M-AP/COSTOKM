@@ -213,11 +213,17 @@ export function applicaMedie(json, medie, { riferimento, oggi }) {
   return { json, cambiati, avvisi };
 }
 
+/** Vero se l'errore è di rete (server irraggiungibile, timeout), non un problema dei dati. */
+export function erroreDiRete(e) {
+  const codice = e?.cause?.code || e?.code || '';
+  return /fetch failed/i.test(e?.message || '') || /^(ECONN|ETIMEDOUT|ENOTFOUND|EAI_AGAIN|UND_ERR_CONNECT|UND_ERR_SOCKET|UND_ERR_HEADERS_TIMEOUT)/.test(codice) || e?.name === 'TimeoutError';
+}
+
 async function scarica(url) {
   let ultimoErrore;
   for (let i = 0; i < 3; i++) {
     try {
-      const r = await fetch(url, { headers: { 'User-Agent': 'costokm.it aggiornamento prezzi (+https://costokm.it)' } });
+      const r = await fetch(url, { signal: AbortSignal.timeout(30000), headers: { 'User-Agent': 'costokm.it aggiornamento prezzi (+https://costokm.it)' } });
       if (!r.ok) throw new Error(`${url}: HTTP ${r.status}`);
       const buf = Buffer.from(await r.arrayBuffer());
       // i CSV del MIMIT sono in UTF-8; in caso di caratteri non validi si ripiega su latin1
@@ -263,8 +269,11 @@ async function main() {
 
 if (import.meta.url === `file://${process.argv[1]}`) {
   main().catch((e) => {
-    console.error('Aggiornamento non riuscito: ' + e.message);
+    const causa = e.cause ? ` (${e.cause.code || e.cause.message || e.cause})` : '';
+    console.error('Aggiornamento non riuscito: ' + e.message + causa);
     console.error('prezzi.json non è stato modificato: il sito continua a mostrare gli ultimi valori validi con la loro data.');
-    process.exit(1);
+    // Codice 2 = sito del Ministero irraggiungibile (problema di rete, non dei dati): l'azione GitHub
+    // lo gestisce con una segnalazione invece di fallire ogni giorno.
+    process.exit(erroreDiRete(e) ? 2 : 1);
   });
 }

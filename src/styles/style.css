@@ -629,3 +629,5 @@ textarea { min-height: 140px; resize: vertical; }
 .chip { border-radius: 6px; padding: 0 6px; }
 .legenda-regioni { margin: 10px 0 0; }
 @media (min-width: 900px) { .prezzi-grid { grid-template-columns: repeat(4, 1fr); } }
+
+.avviso-vecchio { display: block; color: var(--warn-ink); background: var(--warn-bg); border-radius: var(--r-sm); padding: 8px 12px; margin-bottom: 6px; font-weight: 650; }
